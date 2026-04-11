@@ -1,0 +1,5 @@
+{
+  "name": "Simple Recorder",
+  "description": "A high-performance, 120fps screen recorder for professionals.",
+  "requestFramePermissions": []
+}
