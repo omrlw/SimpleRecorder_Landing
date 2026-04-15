@@ -3,22 +3,22 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  Monitor,
-  AppWindow,
-  Maximize,
-  Mic,
-  Video,
-  Settings,
-  Check,
-  Zap,
-  Layers,
-  Square,
-  Clock,
-  Paperclip,
-  Eye,
-  Plus,
-  Minus
-} from 'lucide-react';
+  AudioIcon,
+  CheckIcon,
+  ClockIcon,
+  EyesIcon,
+  MinusIcon,
+  NoWatermarkIcon,
+  PaperclipIcon,
+  PlusIcon,
+  RecordIcon,
+  ScreenIcon,
+  SelectionIcon,
+  SettingsIcon,
+  SpeedIcon,
+  SquareIcon,
+  WindowIcon
+} from '@/components/icons';
 
 // --- Components ---
 
@@ -81,9 +81,9 @@ const AnimatedWidget = () => {
   const activeShadow = '0 16px 26px rgba(0,0,0,0.14)';
   const controlShadow = '0 14px 20px rgba(0,0,0,0.16)';
   const selectorOptions = [
-    { label: 'Screen 1', icon: Monitor },
-    { label: 'Window', icon: AppWindow },
-    { label: 'Region', icon: Maximize }
+    { label: 'Screen 1', icon: ScreenIcon },
+    { label: 'Window', icon: WindowIcon },
+    { label: 'Region', icon: SelectionIcon }
   ] as const;
   const isIntroApp = stage === 'intro-app';
   const isSettingsStage = stage === 'settings-open' || stage === 'mode-switch' || stage === 'countdown' || stage === 'transition-to-recording';
@@ -97,8 +97,7 @@ const AnimatedWidget = () => {
   const countdownValue = stage === 'countdown' ? `${countdown}s` : '5s';
   const highlightedRow = stage === 'countdown' ? 'Countdown' : null;
   const introControlDark = isIntroApp || isRecording;
-  const centerHasGradient = isIntroApp;
-  const centerIsFlatRed = isTransitioningToRecording || isRecording;
+  const centerHasGradient = isIntroApp || isTransitioningToRecording || isRecording;
   const centerShowsStop = isTransitioningToRecording || isRecording;
   const selectorTop = 214;
   const selectorWidth = compactSelector ? 224 : 308;
@@ -106,7 +105,7 @@ const AnimatedWidget = () => {
     {
       label: 'Display',
       value: displayValue,
-      icon: Monitor,
+      icon: ScreenIcon,
       toggle: true,
       toggleColor: activeMode === 0 ? '#fb2c36' : '#46d478',
       toggleActive: activeMode !== 0
@@ -114,7 +113,7 @@ const AnimatedWidget = () => {
     {
       label: 'Microphone',
       value: 'External mic',
-      icon: Mic,
+      icon: AudioIcon,
       toggle: false,
       toggleColor: null,
       toggleActive: false
@@ -122,7 +121,7 @@ const AnimatedWidget = () => {
     {
       label: 'Quality',
       value: '120fps',
-      icon: Eye,
+      icon: EyesIcon,
       toggle: false,
       toggleColor: null,
       toggleActive: false
@@ -130,7 +129,7 @@ const AnimatedWidget = () => {
     {
       label: 'Countdown',
       value: countdownValue,
-      icon: Clock,
+      icon: ClockIcon,
       toggle: false,
       toggleColor: null,
       toggleActive: false
@@ -138,7 +137,7 @@ const AnimatedWidget = () => {
     {
       label: 'Save to',
       value: 'Desktop/',
-      icon: Paperclip,
+      icon: PaperclipIcon,
       toggle: false,
       toggleColor: null,
       toggleActive: false
@@ -164,7 +163,6 @@ const AnimatedWidget = () => {
     }
 
     if (stage === 'countdown') {
-      setCountdown(3);
       timeoutIds.push(window.setTimeout(() => setCountdown(2), 560));
       timeoutIds.push(window.setTimeout(() => setCountdown(1), 1120));
       timeoutIds.push(window.setTimeout(() => setStage('transition-to-recording'), 1760));
@@ -238,7 +236,7 @@ const AnimatedWidget = () => {
                       }}
                       className="flex items-center gap-2 text-[12px] font-medium tracking-[-0.01em] text-[#111111]"
                     >
-                      <Icon className="h-[13px] w-[13px] shrink-0 stroke-[2.2]" />
+                      <Icon className="h-[13px] w-[13px] shrink-0" />
                       <span>{label}</span>
                     </motion.div>
 
@@ -370,7 +368,7 @@ const AnimatedWidget = () => {
                           transition={{ duration: 0.18, ease: smoothEase }}
                           className="flex items-center justify-center"
                         >
-                          <Icon className={`h-[13px] w-[13px] ${isActive ? 'text-white' : 'text-[#d9d9d9]'}`} strokeWidth={2.1} />
+                          <Icon className={`h-[13px] w-[13px] ${isActive ? 'text-white' : 'text-[#d9d9d9]'}`} />
                         </motion.div>
                       ) : (
                         <motion.div
@@ -381,7 +379,7 @@ const AnimatedWidget = () => {
                           transition={{ duration: 0.18, ease: smoothEase }}
                           className="flex items-center gap-1.5 text-[#111111]"
                         >
-                          <Icon className="h-[11px] w-[11px]" strokeWidth={2.1} />
+                          <Icon className="h-[11px] w-[11px]" />
                           <span className="text-[12px] font-medium tracking-[-0.01em]">{label}</span>
                         </motion.div>
                       )}
@@ -409,7 +407,7 @@ const AnimatedWidget = () => {
           }}
           className="relative flex h-[52px] w-[52px] items-center justify-center rounded-full"
         >
-          <Mic className="h-5 w-5" />
+          <AudioIcon className="h-5 w-5" />
           <AnimatePresence initial={false}>
             {isRecording ? (
               <motion.span
@@ -437,7 +435,7 @@ const AnimatedWidget = () => {
           }}
           className="relative flex h-[52px] w-[52px] items-center justify-center rounded-full"
         >
-          <Video className="h-5 w-5" />
+          <RecordIcon className="h-5 w-5" />
           <AnimatePresence initial={false}>
             {isRecording ? (
               <motion.span
@@ -464,7 +462,7 @@ const AnimatedWidget = () => {
                 : isRecording
                   ? 1.008
                   : 1,
-            boxShadow: centerHasGradient || centerIsFlatRed ? '0 0 0 rgba(0,0,0,0)' : '0 16px 24px rgba(0,0,0,0.16)'
+            boxShadow: centerHasGradient ? '0 0 0 rgba(0,0,0,0)' : '0 16px 24px rgba(0,0,0,0.16)'
           }}
           transition={{
             scale: buttonSpring,
@@ -478,11 +476,6 @@ const AnimatedWidget = () => {
             className="absolute inset-0"
             style={{ background: 'linear-gradient(180deg, #fb2c36 0%, #951a20 100%)' }}
           />
-          <motion.span
-            animate={{ opacity: centerIsFlatRed ? 1 : 0 }}
-            transition={{ duration: 0.18, ease: smoothEase }}
-            className="absolute inset-0 bg-[#fb2c36]"
-          />
           <AnimatePresence mode="wait" initial={false}>
             {centerShowsStop ? (
               <motion.div
@@ -493,7 +486,7 @@ const AnimatedWidget = () => {
                 transition={buttonSpring}
                 className="relative z-10 flex items-center justify-center"
               >
-                <Square className="h-6 w-6 fill-white text-white" />
+                <SquareIcon className="h-6 w-6 fill-white text-white" />
               </motion.div>
             ) : (
               <motion.div
@@ -522,7 +515,7 @@ const AnimatedWidget = () => {
           }}
           className="flex h-[52px] w-[52px] items-center justify-center rounded-full"
         >
-          <Settings className="h-5 w-5" />
+          <SettingsIcon className="h-5 w-5" />
         </motion.button>
       </div>
     </motion.div>
@@ -596,49 +589,49 @@ const Hero = () => {
 const Features = () => {
   const features = [
     {
-      icon: <Zap className="w-8 h-8 text-white" />,
+      icon: <EyesIcon className="w-8 h-8 text-white" />,
       iconBg: "bg-[#fb2c36]",
-      title: "120fps Capture",
+      title: "120 FPS",
       description: "Silky smooth recordings perfect for gaming, high-end UI demonstrations, and professional tutorials. Zero dropped frames."
     },
     {
-      icon: <Maximize className="w-8 h-8 text-[#262626]" />,
+      icon: <SelectionIcon className="w-8 h-8 text-[#262626]" />,
       iconBg: "bg-white",
       title: "Precision Selection",
       description: "Instantly snap to windows, select custom regions, or record your entire display with a single click."
     },
     {
-      icon: <Mic className="w-8 h-8 text-[#262626]" />,
+      icon: <RecordIcon className="w-8 h-8 text-[#262626]" />,
       iconBg: "bg-white",
       title: "Studio Audio",
       description: "Capture system audio and your microphone on separate tracks for ultimate control in post-production."
     },
     {
-      icon: <Layers className="w-8 h-8 text-[#262626]" />,
+      icon: <WindowIcon className="w-8 h-8 text-[#262626]" />,
       iconBg: "bg-white",
       title: "Floating UI",
       description: "Our unobtrusive floating widget stays out of your way while giving you instant access to controls."
     },
     {
-      icon: <Layers className="w-8 h-8 text-[#262626]" />,
+      icon: <NoWatermarkIcon className="w-8 h-8 text-[#262626]" />,
       iconBg: "bg-white",
       title: "No Watermark",
       description: "Your recordings stay clean from start to finish. No branding stamped over your work, even on the free plan."
     },
     {
-      icon: <Layers className="w-8 h-8 text-[#262626]" />,
+      icon: <SpeedIcon className="w-8 h-8 text-[#262626]" />,
       iconBg: "bg-white",
       title: "Built for Speed",
       description: "Launch fast, record fast, and move on. Simple Recorder is optimized to feel instant, lightweight, and reliable every time."
-    }
-  ];
+    },
+  ] as const;
 
   return (
     <section id="features" className="py-32 px-6 bg-[#F8FAFC] max-w-[1400px] mx-auto">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-20">
         <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
           Everything you need.<br />
-          <span className="text-[#262626]/40">Nothing you don't.</span>
+          <span className="text-[#262626]/40">Nothing you don&apos;t.</span>
         </h2>
         <div className="max-w-sm pb-2">
           <p className="text-xl text-[#262626] font-normal leading-relaxed">
@@ -650,7 +643,7 @@ const Features = () => {
       <div className="grid md:grid-cols-2 gap-6">
         {features.map((feature, idx) => (
           <motion.div
-            key={idx}
+            key={feature.title}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -680,64 +673,116 @@ const Pricing = () => (
       </h2>
       <div className="max-w-sm pb-2">
         <p className="text-xl text-[#262626] font-normal leading-relaxed">
-          Start for free, upgrade when you need professional power.
+          Pay once, own it forever. No subscriptions, no recurring fees.
         </p>
       </div>
     </div>
 
-    <div className="grid md:grid-cols-2 gap-6">
-      {/* Free Tier */}
-      <div className="bg-[#d8d8d8] p-10 md:p-14 rounded-[40px] flex flex-col">
-        <div className="mb-12">
-          <h3 className="text-3xl font-bold text-[#262626] mb-4 tracking-tight">Starter</h3>
-          <p className="text-lg text-[#262626]/60 font-normal">Perfect for quick captures.</p>
+    <div className="grid md:grid-cols-2 gap-px bg-[#cecece] rounded-[40px] overflow-hidden">
+      {/* Starter — Free */}
+      <div className="bg-[#d8d8d8] p-10 md:p-14 lg:p-16 flex flex-col">
+        {/* Plan header */}
+        <div className="mb-14">
+          <div className="flex items-center gap-3 mb-5">
+            <p className="text-xs font-bold tracking-[0.15em] uppercase text-[#262626]/40">
+              Starter
+            </p>
+            <span className="text-[10px] font-bold tracking-[0.1em] uppercase text-[#262626]/60 bg-[#262626]/10 px-3 py-1 rounded-full">
+              Free forever
+            </span>
+          </div>
+          <div className="flex items-baseline gap-2 mb-5">
+            <span className="text-[5.5rem] md:text-[6.5rem] font-bold tracking-tighter text-[#262626] leading-none">
+              $0
+            </span>
+          </div>
+          <p className="text-lg text-[#262626]/60 font-normal leading-relaxed">
+            Everything you need for clean, fast screen recording — completely free, forever.
+          </p>
         </div>
-        <div className="mb-12">
-          <span className="text-7xl font-bold tracking-tight text-[#262626]">$0</span>
-          <span className="text-xl text-[#262626]/60 font-normal ml-2">/forever</span>
+
+        {/* Features */}
+        <div className="mb-14 flex-grow">
+          <p className="text-xs font-bold tracking-[0.15em] uppercase text-[#262626]/40 mb-6">
+            What&apos;s included
+          </p>
+          <ul className="flex flex-col gap-5">
+            {[
+              'Up to 120 FPS recording',
+              'Up to 1080p resolution',
+              'Precision selection',
+              'Basic audio capture',
+              'Unlimited recordings',
+              'No watermark',
+              'Lightweight & fast',
+              'Community support'
+            ].map((item, i) => (
+              <li key={i} className="flex items-center gap-4 text-lg text-[#262626]/80 font-normal">
+                <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
+                  <CheckIcon className="w-4 h-4 text-[#262626]" />
+                </div>
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className="flex flex-col gap-5 mb-12 flex-grow">
-          {['1080p recording', 'Up to 5 minutes per clip', 'Basic audio capture', 'Standard support'].map((item, i) => (
-            <li key={i} className="flex items-center gap-4 text-lg text-[#262626]/80 font-normal">
-              <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0">
-                <Check className="w-4 h-4 text-[#262626]" />
-              </div>
-              {item}
-            </li>
-          ))}
-        </ul>
-        <button className="w-full py-5 rounded-full font-bold text-[#262626] bg-white hover:bg-[#F8FAFC] transition-colors text-lg">
+
+        {/* CTA */}
+        <button className="w-full py-5 rounded-full font-bold text-[#262626] bg-white hover:bg-[#F8FAFC] transition-colors text-lg cursor-pointer shadow-sm">
           Download Free
         </button>
       </div>
 
-      {/* Pro Tier */}
-      <div className="bg-[#262626] p-10 md:p-14 rounded-[40px] flex flex-col relative overflow-hidden">
-        <div className="mb-12">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-3xl font-bold text-white tracking-tight">Pro</h3>
-            <div className="bg-[#fb2c36] text-white text-xs font-bold px-4 py-1.5 rounded-full">
-              MOST POPULAR
-            </div>
+      {/* Pro — One-time */}
+      <div className="bg-[#262626] p-10 md:p-14 lg:p-16 flex flex-col relative">
+        {/* Plan header */}
+        <div className="mb-14">
+          <div className="flex items-center gap-3 mb-5">
+            <p className="text-xs font-bold tracking-[0.15em] uppercase text-white/40">
+              Pro
+            </p>
+            <span className="text-[10px] font-bold tracking-[0.1em] uppercase text-white bg-white/10 px-3 py-1 rounded-full">
+              One-time purchase
+            </span>
           </div>
-          <p className="text-lg text-white/60 font-normal">For creators and professionals.</p>
+          <div className="flex items-baseline gap-2 mb-5">
+            <span className="text-[5.5rem] md:text-[6.5rem] font-bold tracking-tighter text-white leading-none">
+              $5
+            </span>
+          </div>
+          <p className="text-lg text-white/60 font-normal leading-relaxed">
+            Unlock the full power of Simple Recorder with a single payment. Yours forever.
+          </p>
         </div>
-        <div className="mb-12">
-          <span className="text-7xl font-bold tracking-tight text-white">$9</span>
-          <span className="text-xl text-white/60 font-normal ml-2">/month</span>
+
+        {/* Features */}
+        <div className="mb-14 flex-grow">
+          <p className="text-xs font-bold tracking-[0.15em] uppercase text-white/35 mb-6">
+            Everything in Starter, plus
+          </p>
+          <ul className="flex flex-col gap-5">
+            {[
+              'Record at your monitor\'s refresh rate',
+              'Up to 4K resolution',
+              'System + microphone audio',
+              'Separate audio channels',
+              'Advanced export formats',
+              'Priority support',
+              'Future updates included'
+            ].map((item, i) => (
+              <li key={i} className="flex items-center gap-4 text-lg text-white/80 font-normal">
+                <div className="w-6 h-6 rounded-full bg-[#fb2c36] flex items-center justify-center shrink-0">
+                  <CheckIcon className="w-4 h-4 text-white" />
+                </div>
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
-        <ul className="flex flex-col gap-5 mb-12 flex-grow">
-          {['120fps 4K recording', 'Unlimited recording time', 'Multi-track studio audio', 'Custom watermarks', 'Priority support'].map((item, i) => (
-            <li key={i} className="flex items-center gap-4 text-lg text-white/90 font-normal">
-              <div className="w-6 h-6 rounded-full bg-[#fb2c36] flex items-center justify-center shrink-0">
-                <Check className="w-4 h-4 text-white" />
-              </div>
-              {item}
-            </li>
-          ))}
-        </ul>
-        <button className="w-full py-5 rounded-full font-bold text-white bg-[#fb2c36] hover:bg-[#e02730] transition-colors text-lg shadow-lg shadow-[#fb2c36]/20">
-          Get Pro Now
+
+        {/* CTA */}
+        <button className="w-full py-5 rounded-full font-bold text-white bg-[#fb2c36] hover:bg-[#e02730] transition-colors text-lg cursor-pointer">
+          Get Lifetime Access
         </button>
       </div>
     </div>
@@ -767,10 +812,10 @@ const Contact = () => (
           <div className="lg:w-1/2">
             <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-white leading-[1.05] mb-6">
               Have questions?<br />
-              <span className="text-white/40">Let's talk.</span>
+              <span className="text-white/40">Let&apos;s talk.</span>
             </h2>
             <p className="text-xl text-white/70 font-normal leading-relaxed max-w-md">
-              Our team is here to help. Send us a message and we'll respond within 24 hours.
+              Our team is here to help. Send us a message and we&apos;ll respond within 24 hours.
             </p>
           </div>
 
@@ -831,9 +876,9 @@ const FAQItem = ({ question, answer, isOpen, onClick }: { question: string; answ
       <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${isOpen ? 'bg-[#fb2c36] rotate-0' : 'bg-[#d8d8d8] group-hover:bg-[#cecece]'
         }`}>
         {isOpen ? (
-          <Minus className="w-5 h-5 text-white" />
+          <MinusIcon className="w-5 h-5 text-white" />
         ) : (
-          <Plus className="w-5 h-5 text-[#262626]" />
+          <PlusIcon className="w-5 h-5 text-[#262626]" />
         )}
       </div>
     </button>
@@ -890,7 +935,7 @@ const FAQ = () => {
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-20">
         <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
           Got questions?<br />
-          <span className="text-[#262626]/40">We've got answers.</span>
+          <span className="text-[#262626]/40">We&apos;ve got answers.</span>
         </h2>
         <div className="max-w-sm pb-2">
           <p className="text-xl text-[#262626] font-normal leading-relaxed">
@@ -915,7 +960,7 @@ const FAQ = () => {
 };
 
 const Footer = () => (
-  <footer className="bg-black pt-24 pb-12 px-6 mt-12 rounded-t-[40px] max-w-[1400px] mx-auto mb-6">
+  <footer className="bg-[#262626] pt-24 pb-12 px-6 mt-12 rounded-t-[40px] max-w-[1400px] mx-auto mb-6">
     <div className="flex flex-col items-center text-center mb-20">
       <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-8">
         Ready to record?
