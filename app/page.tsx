@@ -19,6 +19,9 @@ import {
   SquareIcon,
   WindowIcon
 } from '@/components/icons';
+import HighlightSparkleAnimation from '@/components/HighlightSparkleAnimation';
+import NoSurprisesMark from '@/components/NoSurprisesMark';
+import QuestionsMark from '@/components/QuestionsMark';
 
 // --- Components ---
 
@@ -35,25 +38,195 @@ const AppLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
   </svg>
 );
 
-const Navbar = () => (
-  <nav className="w-full px-6 py-6 flex items-center justify-between bg-[#F8FAFC] max-w-[1400px] mx-auto">
-    <div className="flex items-center gap-3">
-      <AppLogo className="w-10 h-10" />
-      <span className="font-bold text-lg tracking-tight text-[#262626]">Simple Recorder</span>
-    </div>
-    <div className="hidden md:flex items-center gap-2">
-      <a href="#features" className="bg-[#d8d8d8] hover:bg-[#cecece] cursor-pointer transition-colors px-5 py-2.5 rounded-full text-sm font-bold text-[#262626] flex items-center gap-2">
-        Features
-      </a>
-      <a href="#pricing" className="px-5 py-2.5 text-sm font-bold text-[#262626] hover:text-black transition-colors">Pricing</a>
-      <a href="#faq" className="px-5 py-2.5 text-sm font-bold text-[#262626] hover:text-black transition-colors">FAQ</a>
-      <a href="#contact" className="px-5 py-2.5 text-sm font-bold text-[#262626] hover:text-black transition-colors">Contact</a>
-      <a href="#pricing" className="bg-[#262626] text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-black transition-colors">
-        DOWNLOAD FREE
-      </a>
-    </div>
-  </nav>
+const NavbarLogo = ({ className = "w-10 h-10" }: { className?: string }) => (
+  <span
+    className={`relative inline-flex shrink-0 items-center justify-center rounded-full bg-[linear-gradient(180deg,#fb2c36_0%,#951a20_100%)] ${className}`}
+  >
+    <span className="h-4 w-4 rounded-full bg-white" />
+  </span>
 );
+
+const navLinks = [
+  { href: '#features', label: 'Features' },
+  { href: '#pricing', label: 'Pricing' },
+  { href: '#faq', label: 'FAQ' },
+  { href: '#contact', label: 'Contact' }
+] as const;
+
+const Navbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = React.useRef<HTMLDivElement>(null);
+  const navbarTransition = {
+    duration: 0.88,
+    ease: [0.22, 1, 0.36, 1] as const
+  };
+  const centerTransition = {
+    duration: 0.64,
+    ease: [0.16, 1, 0.3, 1] as const
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const nextScrolled = window.scrollY > 40;
+      setIsScrolled(nextScrolled);
+
+      if (!nextScrolled) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('pointerdown', handlePointerDown);
+    }
+
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [isMenuOpen]);
+
+  const handleMenuToggle = () => {
+    if (!isScrolled) return;
+    setIsMenuOpen((open) => !open);
+  };
+
+  const handleLinkClick = () => {
+    setIsMenuOpen(false);
+  };
+
+  return (
+    <>
+      <nav className="w-full px-6 py-6 flex items-center justify-between bg-[#F8FAFC] max-w-[1400px] mx-auto md:hidden">
+        <div className="flex items-center gap-3">
+          <NavbarLogo className="w-10 h-10" />
+          <span className="font-bold text-lg tracking-tight text-[#262626]">Simple Recorder</span>
+        </div>
+      </nav>
+
+      <div className="hidden md:block h-[104px]" aria-hidden="true" />
+
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-50 hidden md:flex justify-center px-6 pt-6">
+        <motion.nav
+          layout
+          transition={navbarTransition}
+          className={`pointer-events-auto relative flex w-full items-center justify-between overflow-visible ${
+            isScrolled
+              ? 'max-w-[760px] rounded-[34px] border border-black/5 bg-[#F8FAFC]/94 px-5 py-3 shadow-[0_22px_55px_-20px_rgba(38,38,38,0.2)] backdrop-blur-xl'
+              : 'max-w-[1400px] rounded-none border border-transparent bg-[#F8FAFC] px-0 py-0 shadow-none'
+          }`}
+        >
+          <motion.div
+            layout="position"
+            transition={navbarTransition}
+            className={`relative z-10 flex shrink-0 items-center gap-3 ${isScrolled ? 'min-w-[220px]' : ''}`}
+          >
+            <NavbarLogo className="w-10 h-10" />
+              <span className={`font-bold tracking-tight text-[#262626] ${isScrolled ? 'text-[1.05rem]' : 'text-lg'}`}>
+                Simple Recorder
+              </span>
+            </motion.div>
+
+            <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-center">
+              <div ref={menuRef} className="relative flex items-center justify-center">
+                <motion.div
+                  layout
+                  transition={centerTransition}
+                  className={`origin-center flex items-center justify-center overflow-hidden ${
+                  isScrolled ? 'w-0 scale-x-[0.82] opacity-0 pointer-events-none blur-[0.4px]' : 'w-[430px] scale-x-100 opacity-100 blur-0'
+                }`}
+                >
+                  <div className="flex items-center gap-2">
+                  {navLinks.map((link, index) => (
+                    <a
+                      key={`expanded-${link.href}`}
+                      href={link.href}
+                      className={
+                        index === 0
+                          ? 'bg-[#d8d8d8] hover:bg-[#cecece] cursor-pointer transition-colors px-5 py-2.5 rounded-full text-sm font-bold text-[#262626]'
+                          : 'px-5 py-2.5 text-sm font-bold text-[#262626] hover:text-black transition-colors'
+                      }
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.div
+                layout
+                transition={centerTransition}
+                className={`absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center ${
+                  isScrolled ? 'opacity-100 pointer-events-auto scale-100' : 'opacity-0 pointer-events-none scale-[0.94]'
+                }`}
+              >
+                <button
+                  type="button"
+                  onClick={handleMenuToggle}
+                  aria-expanded={isMenuOpen}
+                  aria-haspopup="true"
+                  className="min-w-[108px] rounded-full bg-[#d8d8d8] px-5 py-2.5 text-sm font-bold text-[#262626] transition-all duration-300 hover:bg-[#cecece]"
+                >
+                  Menu
+                </button>
+
+                <AnimatePresence>
+                  {isScrolled && isMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6, scale: 0.985 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.985 }}
+                      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute top-[calc(100%+16px)] left-1/2 w-[220px] -translate-x-1/2 rounded-[28px] border border-black/5 bg-[#F8FAFC]/96 p-2 shadow-[0_24px_50px_-20px_rgba(38,38,38,0.28)] backdrop-blur-xl"
+                    >
+                      <div className="flex flex-col">
+                        {navLinks.map((link) => (
+                          <a
+                            key={`compact-${link.href}`}
+                            href={link.href}
+                            onClick={handleLinkClick}
+                            className="rounded-[20px] px-4 py-3 text-sm font-bold text-[#262626] transition-colors hover:bg-[#d8d8d8]"
+                          >
+                            {link.label}
+                          </a>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            </div>
+          </div>
+
+          <motion.div
+            layout="position"
+            transition={navbarTransition}
+            className="relative z-10 flex shrink-0 items-center justify-end"
+          >
+            <a
+              href="#pricing"
+              className={`rounded-full bg-[#262626] font-bold text-white transition-colors hover:bg-black ${
+                isScrolled ? 'px-5 py-2.5 text-[14px]' : 'px-6 py-3 text-[14px]'
+              }`}
+            >
+              DOWNLOAD FREE
+            </a>
+          </motion.div>
+        </motion.nav>
+      </div>
+    </>
+  );
+};
 
 const AnimatedWidget = () => {
   const [stage, setStage] = useState<'intro-app' | 'settings-open' | 'mode-switch' | 'countdown' | 'transition-to-recording' | 'recording-idle'>('intro-app');
@@ -586,6 +759,93 @@ const Hero = () => {
   );
 };
 
+const FeatureWorkflowMockup = () => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="mt-6"
+    >
+      <div className="px-6 py-10 md:px-10 md:py-12 lg:px-14 lg:py-14">
+        <div className="mb-10 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#262626]/45 shadow-sm">
+              Product preview
+            </div>
+            <h3 className="text-4xl font-bold leading-[1.02] tracking-tight text-[#262626] md:text-5xl">
+              Leave one strong screen here and swap in your video later.
+            </h3>
+          </div>
+
+          <p className="max-w-md text-lg leading-relaxed text-[#262626]/60">
+            This block is just a clean stage for your future demo, without pretending the app is already finished.
+          </p>
+        </div>
+
+        <div className="rounded-[36px] bg-[#262626] p-3 shadow-[0_34px_80px_-34px_rgba(38,38,38,0.45)] md:p-4">
+          <div className="overflow-hidden rounded-[30px] bg-[#f2f2f2]">
+            <div className="flex items-center justify-between border-b border-black/6 bg-[#e7e7e7] px-5 py-4 md:px-6">
+              <div className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#fb2c36]" />
+                <span className="h-2.5 w-2.5 rounded-full bg-black/15" />
+                <span className="h-2.5 w-2.5 rounded-full bg-black/15" />
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="hidden items-center gap-2 rounded-full bg-white px-3 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#262626]/45 shadow-sm sm:inline-flex">
+                  <ScreenIcon className="h-3.5 w-3.5" />
+                  Demo screen
+                </div>
+                <div className="rounded-full bg-[#fb2c36] px-3 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-white shadow-[0_12px_24px_-14px_rgba(251,44,54,0.9)]">
+                  Ready for video
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[linear-gradient(135deg,#314e56_0%,#527278_48%,#9ab1b4_100%)] p-4 md:p-6">
+              <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] border border-white/20 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_30%),linear-gradient(145deg,rgba(12,18,20,0.18),rgba(12,18,20,0.48))]">
+                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.12),transparent_34%,rgba(255,255,255,0.05)_100%)]" />
+
+                <div className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/20 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-white/70 backdrop-blur-sm md:left-6 md:top-6">
+                  Replace with product video
+                </div>
+
+                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
+                  <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-white/14 shadow-[0_24px_44px_-24px_rgba(0,0,0,0.6)] backdrop-blur-sm">
+                    <div className="ml-1 h-0 w-0 border-y-[12px] border-y-transparent border-l-[20px] border-l-white" />
+                  </div>
+
+                  <p className="max-w-xl text-3xl font-bold leading-[1.02] tracking-tight md:text-5xl">
+                    Your app walkthrough goes here.
+                  </p>
+
+                  <p className="mt-4 max-w-md text-base leading-relaxed text-white/70 md:text-lg">
+                    Keep this as a single, strong visual. One screen. One message. One product moment.
+                  </p>
+                </div>
+
+                <div className="absolute bottom-5 left-1/2 flex w-[calc(100%-2.5rem)] -translate-x-1/2 items-center justify-between rounded-[22px] border border-white/12 bg-black/24 px-4 py-3 text-white/80 backdrop-blur-sm md:bottom-6 md:w-auto md:min-w-[460px] md:px-5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fb2c36]">
+                      <RecordIcon className="h-4 w-4 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">Suggested clip</p>
+                      <p className="text-sm font-semibold tracking-tight md:text-base">Show selection, record, and final export in under 12 seconds</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 const Features = () => {
   const features = [
     {
@@ -630,7 +890,10 @@ const Features = () => {
     <section id="features" className="py-32 px-6 bg-[#F8FAFC] max-w-[1400px] mx-auto">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-20">
         <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
-          Everything you need.<br />
+          <span className="inline-flex items-center gap-3 md:gap-4">
+            <span>Everything you need.</span>
+            <HighlightSparkleAnimation size={60} />
+          </span>
           <span className="text-[#262626]/40">Nothing you don&apos;t.</span>
         </h2>
         <div className="max-w-sm pb-2">
@@ -660,6 +923,8 @@ const Features = () => {
           </motion.div>
         ))}
       </div>
+
+      <FeatureWorkflowMockup />
     </section>
   );
 };
@@ -669,7 +934,10 @@ const Pricing = () => (
     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-20">
       <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
         Simple pricing.<br />
-        <span className="text-[#262626]/40">No surprises.</span>
+        <span className="inline-flex items-center gap-12 text-[#262626]/40">
+          <span>No surprises.</span>
+          <NoSurprisesMark size={78} />
+        </span>
       </h2>
       <div className="max-w-sm pb-2">
         <p className="text-xl text-[#262626] font-normal leading-relaxed">
@@ -933,9 +1201,19 @@ const FAQ = () => {
   return (
     <section id="faq" className="py-32 px-6 bg-[#F8FAFC] max-w-[1400px] mx-auto">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-20">
-        <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
+        <h2 className="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight text-[#262626] md:text-6xl lg:text-[4.5rem]">
           Got questions?<br />
-          <span className="text-[#262626]/40">We&apos;ve got answers.</span>
+          <span className="relative inline-block text-[#262626]/40">
+            We&apos;ve got answers.
+            <QuestionsMark
+              width={108}
+              className="absolute left-[calc(100%-1rem)] -bottom-21 z-0 md:left-[calc(100%+0.5rem)]"
+              style={{
+                WebkitMaskImage: 'linear-gradient(to bottom, black 92%, transparent 100%)',
+                maskImage: 'linear-gradient(to bottom, black 92%, transparent 100%)'
+              }}
+            />
+          </span>
         </h2>
         <div className="max-w-sm pb-2">
           <p className="text-xl text-[#262626] font-normal leading-relaxed">
@@ -944,7 +1222,7 @@ const FAQ = () => {
         </div>
       </div>
 
-      <div className="bg-[#d8d8d8] rounded-[40px] p-10 md:p-14">
+      <div className="relative z-20 bg-[#d8d8d8] rounded-[40px] p-10 md:p-14">
         {faqs.map((faq, idx) => (
           <FAQItem
             key={idx}
