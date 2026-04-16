@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+:root {
+    --accent-red-start: #fb2c36;
+    --accent-red-end: #951a20;
+    --accent-red-solid: #cf242d;
+    --accent-red-solid-strong: #b52028;
+    --accent-red-selection-bg: rgb(251 44 54 / 0.18);
+    --accent-red-gradient: linear-gradient(180deg, var(--accent-red-start) 0%, var(--accent-red-end) 100%);
+}
+
 @font-face {
     font-family: 'Google Sans';
     src: url('/fonts/GoogleSans-Regular.woff2') format('woff2');
@@ -26,4 +35,23 @@
 
 @theme {
     --font-sans: 'Google Sans', system-ui, sans-serif;
+}
+
+::selection {
+    background: var(--accent-red-selection-bg);
+    color: var(--accent-red-solid);
+}
+
+.accent-red-surface {
+    background-color: var(--accent-red-solid);
+    background-image: var(--accent-red-gradient);
+}
+
+.accent-red-focus-ring {
+    transition: box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.accent-red-focus-ring:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-red-solid);
 }

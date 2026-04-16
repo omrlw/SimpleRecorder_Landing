@@ -19,11 +19,13 @@ import {
   SquareIcon,
   WindowIcon
 } from '@/components/icons';
-import HighlightSparkleAnimation from '@/components/HighlightSparkleAnimation';
-import NoSurprisesMark from '@/components/NoSurprisesMark';
-import QuestionsMark from '@/components/QuestionsMark';
 
 // --- Components ---
+
+const accentRedSurfaceStyle = {
+  backgroundImage: 'var(--accent-red-gradient)',
+  backgroundColor: 'var(--accent-red-solid)'
+} satisfies React.CSSProperties;
 
 const AppLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
   <svg className={className} viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -31,8 +33,8 @@ const AppLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
     <path d="M36 48C42.6274 48 48 42.6274 48 36C48 29.3726 42.6274 24 36 24C29.3726 24 24 29.3726 24 36C24 42.6274 29.3726 48 36 48Z" fill="white" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
     <defs>
       <linearGradient id="paint0_linear_1_100" x1="36" y1="0" x2="36" y2="72" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#FB2C36" />
-        <stop offset="1" stopColor="#951A20" />
+        <stop stopColor="var(--accent-red-start)" />
+        <stop offset="1" stopColor="var(--accent-red-end)" />
       </linearGradient>
     </defs>
   </svg>
@@ -40,7 +42,7 @@ const AppLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
 
 const NavbarLogo = ({ className = "w-10 h-10" }: { className?: string }) => (
   <span
-    className={`relative inline-flex shrink-0 items-center justify-center rounded-full bg-[linear-gradient(180deg,#fb2c36_0%,#951a20_100%)] ${className}`}
+    className={`accent-red-surface relative inline-flex shrink-0 items-center justify-center rounded-full ${className}`}
   >
     <span className="h-4 w-4 rounded-full bg-white" />
   </span>
@@ -120,11 +122,10 @@ const Navbar = () => {
         <motion.nav
           layout
           transition={navbarTransition}
-          className={`pointer-events-auto relative flex w-full items-center justify-between overflow-visible ${
-            isScrolled
-              ? 'max-w-[760px] rounded-[34px] border border-black/5 bg-[#F8FAFC]/94 px-5 py-3 shadow-[0_22px_55px_-20px_rgba(38,38,38,0.2)] backdrop-blur-xl'
-              : 'max-w-[1400px] rounded-none border border-transparent bg-[#F8FAFC] px-0 py-0 shadow-none'
-          }`}
+          className={`pointer-events-auto relative flex w-full items-center justify-between overflow-visible ${isScrolled
+            ? 'max-w-[760px] rounded-[34px] border border-black/5 bg-[#F8FAFC]/94 px-5 py-3 shadow-[0_22px_55px_-20px_rgba(38,38,38,0.2)] backdrop-blur-xl'
+            : 'max-w-[1400px] rounded-none border border-transparent bg-[#F8FAFC] px-0 py-0 shadow-none'
+            }`}
         >
           <motion.div
             layout="position"
@@ -132,21 +133,20 @@ const Navbar = () => {
             className={`relative z-10 flex shrink-0 items-center gap-3 ${isScrolled ? 'min-w-[220px]' : ''}`}
           >
             <NavbarLogo className="w-10 h-10" />
-              <span className={`font-bold tracking-tight text-[#262626] ${isScrolled ? 'text-[1.05rem]' : 'text-lg'}`}>
-                Simple Recorder
-              </span>
-            </motion.div>
+            <span className={`font-bold tracking-tight text-[#262626] ${isScrolled ? 'text-[1.05rem]' : 'text-lg'}`}>
+              Simple Recorder
+            </span>
+          </motion.div>
 
-            <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-center">
-              <div ref={menuRef} className="relative flex items-center justify-center">
-                <motion.div
-                  layout
-                  transition={centerTransition}
-                  className={`origin-center flex items-center justify-center overflow-hidden ${
-                  isScrolled ? 'w-0 scale-x-[0.82] opacity-0 pointer-events-none blur-[0.4px]' : 'w-[430px] scale-x-100 opacity-100 blur-0'
-                }`}
-                >
-                  <div className="flex items-center gap-2">
+          <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-center">
+            <div ref={menuRef} className="relative flex items-center justify-center">
+              <motion.div
+                layout
+                transition={centerTransition}
+                className={`origin-center flex items-center justify-center overflow-hidden ${isScrolled ? 'w-0 scale-x-[0.82] opacity-0 pointer-events-none blur-[0.4px]' : 'w-[430px] scale-x-100 opacity-100 blur-0'
+                  }`}
+              >
+                <div className="flex items-center gap-2">
                   {navLinks.map((link, index) => (
                     <a
                       key={`expanded-${link.href}`}
@@ -166,9 +166,8 @@ const Navbar = () => {
               <motion.div
                 layout
                 transition={centerTransition}
-                className={`absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center ${
-                  isScrolled ? 'opacity-100 pointer-events-auto scale-100' : 'opacity-0 pointer-events-none scale-[0.94]'
-                }`}
+                className={`absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center ${isScrolled ? 'opacity-100 pointer-events-auto scale-100' : 'opacity-0 pointer-events-none scale-[0.94]'
+                  }`}
               >
                 <button
                   type="button"
@@ -215,9 +214,8 @@ const Navbar = () => {
           >
             <a
               href="#pricing"
-              className={`rounded-full bg-[#262626] font-bold text-white transition-colors hover:bg-black ${
-                isScrolled ? 'px-5 py-2.5 text-[14px]' : 'px-6 py-3 text-[14px]'
-              }`}
+              className={`rounded-full bg-[#262626] font-bold text-white transition-colors hover:bg-black ${isScrolled ? 'px-5 py-2.5 text-[14px]' : 'px-6 py-3 text-[14px]'
+                }`}
             >
               DOWNLOAD FREE
             </a>
@@ -280,7 +278,7 @@ const AnimatedWidget = () => {
       value: displayValue,
       icon: ScreenIcon,
       toggle: true,
-      toggleColor: activeMode === 0 ? '#fb2c36' : '#46d478',
+      toggleColor: activeMode === 0 ? 'accent-red' : '#46d478',
       toggleActive: activeMode !== 0
     },
     {
@@ -455,13 +453,11 @@ const AnimatedWidget = () => {
                           <motion.span
                             animate={{
                               x: toggleActive ? 13 : 2,
-                              backgroundColor: toggleColor ?? '#fb2c36',
                               scale: toggleActive ? 1 : [1, 1.08, 1],
                               opacity: toggleActive ? 1 : [0.86, 1, 0.86]
                             }}
                             transition={{
                               x: buttonSpring,
-                              backgroundColor: { duration: 0.24, ease: smoothEase },
                               scale: toggleActive
                                 ? { duration: 0.18, ease: smoothEase }
                                 : { duration: 2.2, repeat: Infinity, ease: 'easeInOut' },
@@ -469,8 +465,20 @@ const AnimatedWidget = () => {
                                 ? { duration: 0.18, ease: smoothEase }
                                 : { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }
                             }}
-                            className="absolute top-[1.5px] h-[7px] w-[7px] rounded-full"
-                          />
+                            className="absolute top-[1.5px] h-[7px] w-[7px] overflow-hidden rounded-full"
+                          >
+                            <motion.span
+                              animate={{ opacity: toggleColor === 'accent-red' ? 1 : 0 }}
+                              transition={{ duration: 0.2, ease: smoothEase }}
+                              className="accent-red-surface absolute inset-0"
+                            />
+                            <motion.span
+                              animate={{ opacity: toggleColor === 'accent-red' ? 0 : 1 }}
+                              transition={{ duration: 0.2, ease: smoothEase }}
+                              className="absolute inset-0 rounded-full"
+                              style={{ backgroundColor: toggleColor === 'accent-red' ? '#46d478' : (toggleColor ?? '#46d478') }}
+                            />
+                          </motion.span>
                         </motion.span>
                       ) : null}
                     </motion.div>
@@ -647,7 +655,7 @@ const AnimatedWidget = () => {
             animate={{ opacity: centerHasGradient ? 1 : 0 }}
             transition={{ duration: 0.28, ease: smoothEase }}
             className="absolute inset-0"
-            style={{ background: 'linear-gradient(180deg, #fb2c36 0%, #951a20 100%)' }}
+            style={accentRedSurfaceStyle}
           />
           <AnimatePresence mode="wait" initial={false}>
             {centerShowsStop ? (
@@ -771,72 +779,17 @@ const FeatureWorkflowMockup = () => {
       <div className="px-6 py-10 md:px-10 md:py-12 lg:px-14 lg:py-14">
         <div className="mb-10 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#262626]/45 shadow-sm">
-              Product preview
-            </div>
             <h3 className="text-4xl font-bold leading-[1.02] tracking-tight text-[#262626] md:text-5xl">
               Leave one strong screen here and swap in your video later.
             </h3>
           </div>
-
-          <p className="max-w-md text-lg leading-relaxed text-[#262626]/60">
-            This block is just a clean stage for your future demo, without pretending the app is already finished.
-          </p>
         </div>
 
         <div className="rounded-[36px] bg-[#262626] p-3 shadow-[0_34px_80px_-34px_rgba(38,38,38,0.45)] md:p-4">
           <div className="overflow-hidden rounded-[30px] bg-[#f2f2f2]">
-            <div className="flex items-center justify-between border-b border-black/6 bg-[#e7e7e7] px-5 py-4 md:px-6">
-              <div className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-full bg-[#fb2c36]" />
-                <span className="h-2.5 w-2.5 rounded-full bg-black/15" />
-                <span className="h-2.5 w-2.5 rounded-full bg-black/15" />
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="hidden items-center gap-2 rounded-full bg-white px-3 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-[#262626]/45 shadow-sm sm:inline-flex">
-                  <ScreenIcon className="h-3.5 w-3.5" />
-                  Demo screen
-                </div>
-                <div className="rounded-full bg-[#fb2c36] px-3 py-2 text-[11px] font-bold uppercase tracking-[0.14em] text-white shadow-[0_12px_24px_-14px_rgba(251,44,54,0.9)]">
-                  Ready for video
-                </div>
-              </div>
-            </div>
-
             <div className="bg-[linear-gradient(135deg,#314e56_0%,#527278_48%,#9ab1b4_100%)] p-4 md:p-6">
               <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] border border-white/20 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_30%),linear-gradient(145deg,rgba(12,18,20,0.18),rgba(12,18,20,0.48))]">
                 <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.12),transparent_34%,rgba(255,255,255,0.05)_100%)]" />
-
-                <div className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/20 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-white/70 backdrop-blur-sm md:left-6 md:top-6">
-                  Replace with product video
-                </div>
-
-                <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
-                  <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-white/14 shadow-[0_24px_44px_-24px_rgba(0,0,0,0.6)] backdrop-blur-sm">
-                    <div className="ml-1 h-0 w-0 border-y-[12px] border-y-transparent border-l-[20px] border-l-white" />
-                  </div>
-
-                  <p className="max-w-xl text-3xl font-bold leading-[1.02] tracking-tight md:text-5xl">
-                    Your app walkthrough goes here.
-                  </p>
-
-                  <p className="mt-4 max-w-md text-base leading-relaxed text-white/70 md:text-lg">
-                    Keep this as a single, strong visual. One screen. One message. One product moment.
-                  </p>
-                </div>
-
-                <div className="absolute bottom-5 left-1/2 flex w-[calc(100%-2.5rem)] -translate-x-1/2 items-center justify-between rounded-[22px] border border-white/12 bg-black/24 px-4 py-3 text-white/80 backdrop-blur-sm md:bottom-6 md:w-auto md:min-w-[460px] md:px-5">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#fb2c36]">
-                      <RecordIcon className="h-4 w-4 text-white" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">Suggested clip</p>
-                      <p className="text-sm font-semibold tracking-tight md:text-base">Show selection, record, and final export in under 12 seconds</p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -849,38 +802,44 @@ const FeatureWorkflowMockup = () => {
 const Features = () => {
   const features = [
     {
-      icon: <EyesIcon className="w-8 h-8 text-white" />,
-      iconBg: "bg-[#fb2c36]",
+      icon: EyesIcon,
+      iconClassName: 'text-white group-hover:text-[#262626]',
+      badgeStartsAccent: true,
       title: "120 FPS",
       description: "Silky smooth recordings perfect for gaming, high-end UI demonstrations, and professional tutorials. Zero dropped frames."
     },
     {
-      icon: <SelectionIcon className="w-8 h-8 text-[#262626]" />,
-      iconBg: "bg-white",
+      icon: SelectionIcon,
+      iconClassName: 'text-[#262626] group-hover:text-white',
+      badgeStartsAccent: false,
       title: "Precision Selection",
       description: "Instantly snap to windows, select custom regions, or record your entire display with a single click."
     },
     {
-      icon: <RecordIcon className="w-8 h-8 text-[#262626]" />,
-      iconBg: "bg-white",
+      icon: RecordIcon,
+      iconClassName: 'text-[#262626] group-hover:text-white',
+      badgeStartsAccent: false,
       title: "Studio Audio",
       description: "Capture system audio and your microphone on separate tracks for ultimate control in post-production."
     },
     {
-      icon: <WindowIcon className="w-8 h-8 text-[#262626]" />,
-      iconBg: "bg-white",
+      icon: WindowIcon,
+      iconClassName: 'text-[#262626] group-hover:text-white',
+      badgeStartsAccent: false,
       title: "Floating UI",
       description: "Our unobtrusive floating widget stays out of your way while giving you instant access to controls."
     },
     {
-      icon: <NoWatermarkIcon className="w-8 h-8 text-[#262626]" />,
-      iconBg: "bg-white",
+      icon: NoWatermarkIcon,
+      iconClassName: 'text-[#262626] group-hover:text-white',
+      badgeStartsAccent: false,
       title: "No Watermark",
       description: "Your recordings stay clean from start to finish. No branding stamped over your work, even on the free plan."
     },
     {
-      icon: <SpeedIcon className="w-8 h-8 text-[#262626]" />,
-      iconBg: "bg-white",
+      icon: SpeedIcon,
+      iconClassName: 'text-[#262626] group-hover:text-white',
+      badgeStartsAccent: false,
       title: "Built for Speed",
       description: "Launch fast, record fast, and move on. Simple Recorder is optimized to feel instant, lightweight, and reliable every time."
     },
@@ -890,11 +849,8 @@ const Features = () => {
     <section id="features" className="py-32 px-6 bg-[#F8FAFC] max-w-[1400px] mx-auto">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-20">
         <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
-          <span className="inline-flex items-center gap-3 md:gap-4">
-            <span>Everything you need.</span>
-            <HighlightSparkleAnimation size={60} />
-          </span>
-          <span className="text-[#262626]/40">Nothing you don&apos;t.</span>
+          <span className="block">Everything you need.</span>
+          <span className="block text-[#262626]/40">Nothing you don&apos;t.</span>
         </h2>
         <div className="max-w-sm pb-2">
           <p className="text-xl text-[#262626] font-normal leading-relaxed">
@@ -904,22 +860,34 @@ const Features = () => {
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {features.map((feature, idx) => (
+        {features.map(({ icon: Icon, iconClassName, badgeStartsAccent, title, description }, idx) => (
           <motion.div
-            key={feature.title}
+            key={title}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: idx * 0.1 }}
-            className="bg-[#d8d8d8] p-10 md:p-14 rounded-[40px] flex flex-col justify-between h-full min-h-[320px] group hover:bg-[#cecece] transition-colors"
+            className="bg-[#d8d8d8] p-10 md:p-10 rounded-[40px] flex flex-col justify-between h-full min-h-[320px] group hover:bg-[#cecece] transition-colors"
           >
-            <div className={`w-16 h-16 rounded-full ${feature.iconBg} flex items-center justify-center mb-12 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
-              {feature.icon}
-            </div>
-            <div>
-              <h3 className="text-3xl font-bold text-[#262626] mb-4 tracking-tight">{feature.title}</h3>
-              <p className="text-lg text-[#262626]/70 leading-relaxed font-normal">{feature.description}</p>
-            </div>
+              <div className="relative mb-12 h-16 w-16">
+                <span
+                  className={`absolute inset-0 rounded-full shadow-sm transition-all duration-300 ${badgeStartsAccent ? 'accent-red-surface opacity-100 group-hover:opacity-0' : 'bg-white opacity-100 group-hover:opacity-0'
+                    }`}
+                  style={badgeStartsAccent ? accentRedSurfaceStyle : undefined}
+                />
+                <span
+                  className={`absolute inset-0 rounded-full shadow-sm transition-all duration-300 ${badgeStartsAccent ? 'bg-white opacity-0 group-hover:opacity-100' : 'accent-red-surface opacity-0 group-hover:opacity-100'
+                    }`}
+                  style={!badgeStartsAccent ? accentRedSurfaceStyle : undefined}
+                />
+                <div className="relative flex h-16 w-16 items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Icon className={`h-8 w-8 transition-colors duration-300 ${iconClassName}`} />
+                </div>
+              </div>
+              <div>
+                <h3 className="text-3xl font-bold text-[#262626] mb-4 tracking-tight">{title}</h3>
+                <p className="text-lg text-[#262626]/70 leading-relaxed font-normal">{description}</p>
+              </div>
           </motion.div>
         ))}
       </div>
@@ -934,10 +902,7 @@ const Pricing = () => (
     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-20">
       <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
         Simple pricing.<br />
-        <span className="inline-flex items-center gap-12 text-[#262626]/40">
-          <span>No surprises.</span>
-          <NoSurprisesMark size={78} />
-        </span>
+        <span className="text-[#262626]/40">No surprises.</span>
       </h2>
       <div className="max-w-sm pb-2">
         <p className="text-xl text-[#262626] font-normal leading-relaxed">
@@ -948,7 +913,7 @@ const Pricing = () => (
 
     <div className="grid md:grid-cols-2 gap-px bg-[#cecece] rounded-[40px] overflow-hidden">
       {/* Starter — Free */}
-      <div className="bg-[#d8d8d8] p-10 md:p-14 lg:p-16 flex flex-col">
+      <div className="bg-[#d8d8d8] p-10 md:p-10 lg:p-16 flex flex-col">
         {/* Plan header */}
         <div className="mb-14">
           <div className="flex items-center gap-3 mb-5">
@@ -1002,7 +967,7 @@ const Pricing = () => (
       </div>
 
       {/* Pro — One-time */}
-      <div className="bg-[#262626] p-10 md:p-14 lg:p-16 flex flex-col relative">
+      <div className="bg-[#262626] p-10 md:p-10 lg:p-16 flex flex-col relative">
         {/* Plan header */}
         <div className="mb-14">
           <div className="flex items-center gap-3 mb-5">
@@ -1039,7 +1004,7 @@ const Pricing = () => (
               'Future updates included'
             ].map((item, i) => (
               <li key={i} className="flex items-center gap-4 text-lg text-white/80 font-normal">
-                <div className="w-6 h-6 rounded-full bg-[#fb2c36] flex items-center justify-center shrink-0">
+                <div className="accent-red-surface w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={accentRedSurfaceStyle}>
                   <CheckIcon className="w-4 h-4 text-white" />
                 </div>
                 {item}
@@ -1049,7 +1014,10 @@ const Pricing = () => (
         </div>
 
         {/* CTA */}
-        <button className="w-full py-5 rounded-full font-bold text-white bg-[#fb2c36] hover:bg-[#e02730] transition-colors text-lg cursor-pointer">
+        <button
+          className="accent-red-surface w-full py-5 rounded-full font-bold text-white hover:brightness-110 transition-[filter] text-lg cursor-pointer"
+          style={accentRedSurfaceStyle}
+        >
           Get Lifetime Access
         </button>
       </div>
@@ -1074,7 +1042,7 @@ const Contact = () => (
       <div className="absolute inset-0 bg-black/80" />
 
       {/* Content */}
-      <div className="relative z-10 p-10 md:p-14">
+      <div className="relative z-10 p-10 md:p-10">
         <div className="flex flex-col lg:flex-row gap-16 items-start">
           {/* Left side: Title */}
           <div className="lg:w-1/2">
@@ -1088,7 +1056,7 @@ const Contact = () => (
           </div>
 
           {/* Right side: Form */}
-          <div className="lg:w-1/2 w-full bg-white/10 backdrop-blur-sm p-10 md:p-14 rounded-[32px] border border-white/10">
+          <div className="lg:w-1/2 w-full bg-white/10 backdrop-blur-sm p-10 md:p-10 rounded-[32px] border border-white/10">
             <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-3">
@@ -1096,7 +1064,7 @@ const Contact = () => (
                   <input
                     type="text"
                     placeholder="Jane Doe"
-                    className="px-6 py-4 rounded-2xl border-none focus:outline-none focus:ring-2 focus:ring-[#fb2c36] transition-all bg-white/10 text-lg font-normal text-white placeholder:text-white/30"
+                    className="accent-red-focus-ring px-6 py-4 rounded-2xl border-none focus:outline-none transition-all bg-white/10 text-lg font-normal text-white placeholder:text-white/30"
                   />
                 </div>
                 <div className="flex flex-col gap-3">
@@ -1104,7 +1072,7 @@ const Contact = () => (
                   <input
                     type="email"
                     placeholder="jane@example.com"
-                    className="px-6 py-4 rounded-2xl border-none focus:outline-none focus:ring-2 focus:ring-[#fb2c36] transition-all bg-white/10 text-lg font-normal text-white placeholder:text-white/30"
+                    className="accent-red-focus-ring px-6 py-4 rounded-2xl border-none focus:outline-none transition-all bg-white/10 text-lg font-normal text-white placeholder:text-white/30"
                   />
                 </div>
               </div>
@@ -1113,10 +1081,13 @@ const Contact = () => (
                 <textarea
                   rows={4}
                   placeholder="How can we help you?"
-                  className="px-6 py-4 rounded-2xl border-none focus:outline-none focus:ring-2 focus:ring-[#fb2c36] transition-all bg-white/10 text-lg font-normal text-white placeholder:text-white/30 resize-none"
+                  className="accent-red-focus-ring px-6 py-4 rounded-2xl border-none focus:outline-none transition-all bg-white/10 text-lg font-normal text-white placeholder:text-white/30 resize-none"
                 />
               </div>
-              <button className="w-full bg-[#fb2c36] text-white py-5 rounded-full font-bold hover:bg-[#e02730] transition-colors text-lg mt-4">
+              <button
+                className="accent-red-surface w-full text-white py-5 rounded-full font-bold hover:brightness-110 transition-[filter] text-lg mt-4"
+                style={accentRedSurfaceStyle}
+              >
                 Send Message
               </button>
             </form>
@@ -1138,11 +1109,14 @@ const FAQItem = ({ question, answer, isOpen, onClick }: { question: string; answ
       onClick={onClick}
       className="w-full flex items-center justify-between py-8 text-left group cursor-pointer"
     >
-      <span className="text-xl md:text-2xl font-bold text-[#262626] pr-8 group-hover:text-[#fb2c36] transition-colors">
+      <span className="text-xl md:text-2xl font-bold text-[#262626] pr-8 group-hover:text-[#da3036] transition-colors">
         {question}
       </span>
-      <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${isOpen ? 'bg-[#fb2c36] rotate-0' : 'bg-[#d8d8d8] group-hover:bg-[#cecece]'
-        }`}>
+      <div
+        className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${isOpen ? 'accent-red-surface rotate-0' : 'bg-[#d8d8d8] group-hover:bg-[#cecece]'
+          }`}
+        style={isOpen ? accentRedSurfaceStyle : undefined}
+      >
         {isOpen ? (
           <MinusIcon className="w-5 h-5 text-white" />
         ) : (
@@ -1203,17 +1177,7 @@ const FAQ = () => {
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-20">
         <h2 className="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight text-[#262626] md:text-6xl lg:text-[4.5rem]">
           Got questions?<br />
-          <span className="relative inline-block text-[#262626]/40">
-            We&apos;ve got answers.
-            <QuestionsMark
-              width={108}
-              className="absolute left-[calc(100%-1rem)] -bottom-21 z-0 md:left-[calc(100%+0.5rem)]"
-              style={{
-                WebkitMaskImage: 'linear-gradient(to bottom, black 92%, transparent 100%)',
-                maskImage: 'linear-gradient(to bottom, black 92%, transparent 100%)'
-              }}
-            />
-          </span>
+          <span className="text-[#262626]/40">We&apos;ve got answers.</span>
         </h2>
         <div className="max-w-sm pb-2">
           <p className="text-xl text-[#262626] font-normal leading-relaxed">
@@ -1222,7 +1186,7 @@ const FAQ = () => {
         </div>
       </div>
 
-      <div className="relative z-20 bg-[#d8d8d8] rounded-[40px] p-10 md:p-14">
+      <div className="relative z-20 bg-[#d8d8d8] rounded-[40px] p-10 md:p-10">
         {faqs.map((faq, idx) => (
           <FAQItem
             key={idx}
@@ -1267,7 +1231,7 @@ const Footer = () => (
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-[#F8FAFC] selection:bg-[#fb2c36]/20 selection:text-[#fb2c36]">
+    <main className="min-h-screen bg-[#F8FAFC]">
       <Navbar />
       <Hero />
       <Features />
