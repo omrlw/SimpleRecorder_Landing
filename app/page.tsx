@@ -319,7 +319,7 @@ const AnimatedWidget = () => {
     const timeoutIds: number[] = [];
 
     if (stage === 'intro-app') {
-      timeoutIds.push(window.setTimeout(() => setStage('settings-open'), 980));
+      timeoutIds.push(window.setTimeout(() => setStage('settings-open'), 1580));
     }
 
     if (stage === 'settings-open') {
@@ -703,9 +703,24 @@ const AnimatedWidget = () => {
   );
 };
 
+const heroTitleLines = [
+  'Record your screen in',
+  '120fps with zero',
+  'friction',
+] as const;
+
+const sectionClassName = 'max-w-[1400px] mx-auto bg-[#F8FAFC] px-6 py-20';
+const sectionHeaderClassName = 'mb-16 flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-end';
+const sectionHeaderCopyClassName = 'max-w-sm lg:pb-1';
+
 const Hero = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
   const [videoOpacity, setVideoOpacity] = useState(0.6);
+
+  const heroEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
+  const heroTitleDelay = 0.18;
+  const heroTitleStagger = 0.12;
+  const heroContentDelay = heroTitleDelay + (heroTitleLines.length * heroTitleStagger) + 0.15;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -727,18 +742,75 @@ const Hero = () => {
   }, []);
 
   return (
-    <section className="px-6 pt-12 pb-24 max-w-[1400px] mx-auto bg-[#F8FAFC]">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-12">
+    <section className="max-w-[1400px] mx-auto bg-[#F8FAFC] px-6 pt-12 pb-20">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-10 mb-10 lg:mb-12">
+        {/* Animation 1-3: Title lines slide from right to left */}
         <h1 className="text-5xl md:text-6xl lg:text-[5.5rem] font-bold tracking-tight text-[#262626] max-w-4xl leading-[1.05]">
-          Record your screen in 120fps with zero friction
+          {heroTitleLines.map((line, i) => (
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, x: 80, filter: 'blur(8px)' }}
+              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+              transition={{
+                duration: 0.92,
+                delay: heroTitleDelay + i * heroTitleStagger,
+                ease: heroEase,
+              }}
+              className="block"
+            >
+              {line}
+            </motion.span>
+          ))}
         </h1>
+
         <div className="flex flex-col gap-6 max-w-sm pb-2">
-          <p className="text-xl text-[#262626] font-normal leading-relaxed">
+          {/* Animation 4: Description and button slide from top */}
+          <motion.p
+            initial={{ opacity: 0, y: -28, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{
+              duration: 0.82,
+              delay: heroContentDelay,
+              ease: heroEase,
+            }}
+            className="text-xl text-[#262626] font-normal leading-relaxed"
+          >
             Unlock professional screen capture with our premium solutions.
-          </p>
-          <button className="bg-[#262626] text-white px-8 py-4 rounded-full w-fit text-sm font-bold tracking-wide hover:bg-black transition-colors">
-            DOWNLOAD FREE
-          </button>
+          </motion.p>
+
+          {/* Animation 5: Button slides from top + subtle glow blink */}
+          <motion.button
+            initial={{ opacity: 0, y: -22, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{
+              duration: 0.82,
+              delay: heroContentDelay + 0.1,
+              ease: heroEase,
+            }}
+            className="relative bg-[#262626] text-white px-8 py-4 rounded-full w-fit text-sm font-bold tracking-wide hover:bg-black transition-colors overflow-hidden"
+          >
+            {/* Glow sweep overlay */}
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: [0, 0.35, 0],
+                background: [
+                  'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%)',
+                  'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.28) 50%, transparent 100%)',
+                  'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 50%, transparent 100%)',
+                ],
+              }}
+              transition={{
+                duration: 2.4,
+                delay: heroContentDelay + 0.9,
+                repeat: Infinity,
+                repeatDelay: 3.6,
+                ease: 'easeInOut',
+              }}
+              className="absolute inset-0 pointer-events-none"
+            />
+            <span className="relative z-10">DOWNLOAD FREE</span>
+          </motion.button>
         </div>
       </div>
 
@@ -761,7 +833,6 @@ const Hero = () => {
         <div className="absolute inset-0 flex items-center justify-center z-10">
           <AnimatedWidget />
         </div>
-
       </div>
     </section>
   );
@@ -776,7 +847,7 @@ const FeatureWorkflowMockup = () => {
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       className="mt-6"
     >
-      <div className="px-6 py-10 md:px-10 md:py-12 lg:px-14 lg:py-14">
+      <div className="pt-10">
         <div className="mb-10 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <h3 className="text-4xl font-bold leading-[1.02] tracking-tight text-[#262626] md:text-5xl">
@@ -785,9 +856,9 @@ const FeatureWorkflowMockup = () => {
           </div>
         </div>
 
-        <div className="rounded-[36px] bg-[#262626] p-3 shadow-[0_34px_80px_-34px_rgba(38,38,38,0.45)] md:p-4">
+        <div className="rounded-[36px] bg-[#262626] p-3 shadow-[0_34px_80px_-34px_rgba(38,38,38,0.45)]">
           <div className="overflow-hidden rounded-[30px] bg-[#f2f2f2]">
-            <div className="bg-[linear-gradient(135deg,#314e56_0%,#527278_48%,#9ab1b4_100%)] p-4 md:p-6">
+            <div className="bg-[linear-gradient(135deg,#314e56_0%,#527278_48%,#9ab1b4_100%)] p-3 md:p-4">
               <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] border border-white/20 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_30%),linear-gradient(145deg,rgba(12,18,20,0.18),rgba(12,18,20,0.48))]">
                 <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.12),transparent_34%,rgba(255,255,255,0.05)_100%)]" />
               </div>
@@ -846,13 +917,13 @@ const Features = () => {
   ] as const;
 
   return (
-    <section id="features" className="py-32 px-6 bg-[#F8FAFC] max-w-[1400px] mx-auto">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-20">
+    <section id="features" className={sectionClassName}>
+      <div className={sectionHeaderClassName}>
         <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
           <span className="block">Everything you need.</span>
           <span className="block text-[#262626]/40">Nothing you don&apos;t.</span>
         </h2>
-        <div className="max-w-sm pb-2">
+        <div className={sectionHeaderCopyClassName}>
           <p className="text-xl text-[#262626] font-normal leading-relaxed">
             Built for instant captures and high-fidelity exports. Get professional results without the cluttered workflow.
           </p>
@@ -869,25 +940,25 @@ const Features = () => {
             transition={{ delay: idx * 0.1 }}
             className="bg-[#d8d8d8] p-10 md:p-10 rounded-[40px] flex flex-col justify-between h-full min-h-[320px] group hover:bg-[#cecece] transition-colors"
           >
-              <div className="relative mb-12 h-16 w-16">
-                <span
-                  className={`absolute inset-0 rounded-full shadow-sm transition-all duration-300 ${badgeStartsAccent ? 'accent-red-surface opacity-100 group-hover:opacity-0' : 'bg-white opacity-100 group-hover:opacity-0'
-                    }`}
-                  style={badgeStartsAccent ? accentRedSurfaceStyle : undefined}
-                />
-                <span
-                  className={`absolute inset-0 rounded-full shadow-sm transition-all duration-300 ${badgeStartsAccent ? 'bg-white opacity-0 group-hover:opacity-100' : 'accent-red-surface opacity-0 group-hover:opacity-100'
-                    }`}
-                  style={!badgeStartsAccent ? accentRedSurfaceStyle : undefined}
-                />
-                <div className="relative flex h-16 w-16 items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Icon className={`h-8 w-8 transition-colors duration-300 ${iconClassName}`} />
-                </div>
+            <div className="relative mb-12 h-16 w-16">
+              <span
+                className={`absolute inset-0 rounded-full shadow-sm transition-all duration-300 ${badgeStartsAccent ? 'accent-red-surface opacity-100 group-hover:opacity-0' : 'bg-white opacity-100 group-hover:opacity-0'
+                  }`}
+                style={badgeStartsAccent ? accentRedSurfaceStyle : undefined}
+              />
+              <span
+                className={`absolute inset-0 rounded-full shadow-sm transition-all duration-300 ${badgeStartsAccent ? 'bg-white opacity-0 group-hover:opacity-100' : 'accent-red-surface opacity-0 group-hover:opacity-100'
+                  }`}
+                style={!badgeStartsAccent ? accentRedSurfaceStyle : undefined}
+              />
+              <div className="relative flex h-16 w-16 items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Icon className={`h-8 w-8 transition-colors duration-300 ${iconClassName}`} />
               </div>
-              <div>
-                <h3 className="text-3xl font-bold text-[#262626] mb-4 tracking-tight">{title}</h3>
-                <p className="text-lg text-[#262626]/70 leading-relaxed font-normal">{description}</p>
-              </div>
+            </div>
+            <div>
+              <h3 className="text-3xl font-bold text-[#262626] mb-4 tracking-tight">{title}</h3>
+              <p className="text-lg text-[#262626]/70 leading-relaxed font-normal">{description}</p>
+            </div>
           </motion.div>
         ))}
       </div>
@@ -898,13 +969,13 @@ const Features = () => {
 };
 
 const Pricing = () => (
-  <section id="pricing" className="py-32 px-6 bg-[#F8FAFC] max-w-[1400px] mx-auto">
-    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-20">
+  <section id="pricing" className={sectionClassName}>
+    <div className={sectionHeaderClassName}>
       <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
         Simple pricing.<br />
         <span className="text-[#262626]/40">No surprises.</span>
       </h2>
-      <div className="max-w-sm pb-2">
+      <div className={sectionHeaderCopyClassName}>
         <p className="text-xl text-[#262626] font-normal leading-relaxed">
           Pay once, own it forever. No subscriptions, no recurring fees.
         </p>
@@ -1026,7 +1097,7 @@ const Pricing = () => (
 );
 
 const Contact = () => (
-  <section id="contact" className="py-32 px-6 bg-[#F8FAFC] max-w-[1400px] mx-auto">
+  <section id="contact" className={sectionClassName}>
     <div className="relative rounded-[40px] overflow-hidden">
       {/* Background video */}
       <video
@@ -1173,13 +1244,13 @@ const FAQ = () => {
   ];
 
   return (
-    <section id="faq" className="py-32 px-6 bg-[#F8FAFC] max-w-[1400px] mx-auto">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-20">
+    <section id="faq" className={sectionClassName}>
+      <div className={sectionHeaderClassName}>
         <h2 className="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight text-[#262626] md:text-6xl lg:text-[4.5rem]">
           Got questions?<br />
           <span className="text-[#262626]/40">We&apos;ve got answers.</span>
         </h2>
-        <div className="max-w-sm pb-2">
+        <div className={sectionHeaderCopyClassName}>
           <p className="text-xl text-[#262626] font-normal leading-relaxed">
             Everything you need to know about SimpleRecorder before getting started.
           </p>
@@ -1202,8 +1273,8 @@ const FAQ = () => {
 };
 
 const Footer = () => (
-  <footer className="bg-[#262626] pt-24 pb-12 px-6 mt-12 rounded-t-[40px] max-w-[1400px] mx-auto mb-6">
-    <div className="flex flex-col items-center text-center mb-20">
+  <footer className="bg-[#262626] pt-20 pb-0 px-6 mt-6 rounded-t-[40px] max-w-[1400px] mx-auto">
+    <div className="flex flex-col items-center text-center mb-16">
       <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-8">
         Ready to record?
       </h2>
