@@ -848,8 +848,8 @@ const FeatureWorkflowMockup = () => {
       className="mt-6"
     >
       <div className="pt-10">
-        <div className="mb-10 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-2xl">
+        <div className="mb-10">
+          <div className="max-w-4xl">
             <h3 className="text-4xl font-bold leading-[1.02] tracking-tight text-[#262626] md:text-5xl">
               Leave one strong screen here and swap in your video later.
             </h3>
@@ -877,7 +877,7 @@ const Features = () => {
       iconClassName: 'text-white group-hover:text-[#262626]',
       badgeStartsAccent: true,
       title: "120 FPS",
-      description: "Silky smooth recordings perfect for gaming, high-end UI demonstrations, and professional tutorials. Zero dropped frames."
+      description: "Silky s   mooth recordings perfect for gaming, high-end UI demonstrations, and professional tutorials. Zero dropped frames."
     },
     {
       icon: SelectionIcon,
@@ -920,47 +920,77 @@ const Features = () => {
     <section id="features" className={sectionClassName}>
       <div className={sectionHeaderClassName}>
         <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
-          <span className="block">Everything you need.</span>
-          <span className="block text-[#262626]/40">Nothing you don&apos;t.</span>
+          {/* Animation 1: "Everything you need." slides left to right */}
+          <motion.span
+            className="block"
+            initial={{ opacity: 0, x: -60, filter: 'blur(8px)' }}
+            whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.88, ease: [0.16, 1, 0.3, 1] }}
+          >
+            Everything you need.
+          </motion.span>
+          {/* Animation 2: "Nothing you don't." slides left to right (staggered) */}
+          <motion.span
+            className="block text-[#262626]/40"
+            initial={{ opacity: 0, x: -60, filter: 'blur(8px)' }}
+            whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.88, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+          >
+            Nothing you don&apos;t.
+          </motion.span>
         </h2>
         <div className={sectionHeaderCopyClassName}>
-          <p className="text-xl text-[#262626] font-normal leading-relaxed">
+          {/* Animation 3: Description slides bottom to top */}
+          <motion.p
+            className="text-xl text-[#262626] font-normal leading-relaxed"
+            initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
+            whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.82, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
+          >
             Built for instant captures and high-fidelity exports. Get professional results without the cluttered workflow.
-          </p>
+          </motion.p>
         </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {features.map(({ icon: Icon, iconClassName, badgeStartsAccent, title, description }, idx) => (
-          <motion.div
-            key={title}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: idx * 0.1 }}
-            className="bg-[#d8d8d8] p-10 md:p-10 rounded-[40px] flex flex-col justify-between h-full min-h-[320px] group hover:bg-[#cecece] transition-colors"
-          >
-            <div className="relative mb-12 h-16 w-16">
-              <span
-                className={`absolute inset-0 rounded-full shadow-sm transition-all duration-300 ${badgeStartsAccent ? 'accent-red-surface opacity-100 group-hover:opacity-0' : 'bg-white opacity-100 group-hover:opacity-0'
-                  }`}
-                style={badgeStartsAccent ? accentRedSurfaceStyle : undefined}
-              />
-              <span
-                className={`absolute inset-0 rounded-full shadow-sm transition-all duration-300 ${badgeStartsAccent ? 'bg-white opacity-0 group-hover:opacity-100' : 'accent-red-surface opacity-0 group-hover:opacity-100'
-                  }`}
-                style={!badgeStartsAccent ? accentRedSurfaceStyle : undefined}
-              />
-              <div className="relative flex h-16 w-16 items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Icon className={`h-8 w-8 transition-colors duration-300 ${iconClassName}`} />
+        {features.map(({ icon: Icon, iconClassName, badgeStartsAccent, title, description }, idx) => {
+          const row = Math.floor(idx / 2);
+          const col = idx % 2;
+          return (
+            <motion.div
+              key={title}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: row * 0.12 + col * 0.06, ease: [0.16, 1, 0.3, 1] }}
+              className="bg-[#d8d8d8] p-10 md:p-10 rounded-[40px] flex flex-col justify-between h-full min-h-[320px] group hover:bg-[#cecece] transition-colors"
+            >
+              <div className="relative mb-12 h-16 w-16">
+                <span
+                  className={`absolute inset-0 rounded-full shadow-sm transition-all duration-300 ${badgeStartsAccent ? 'accent-red-surface opacity-100 group-hover:opacity-0' : 'bg-white opacity-100 group-hover:opacity-0'
+                    }`}
+                  style={badgeStartsAccent ? accentRedSurfaceStyle : undefined}
+                />
+                <span
+                  className={`absolute inset-0 rounded-full shadow-sm transition-all duration-300 ${badgeStartsAccent ? 'bg-white opacity-0 group-hover:opacity-100' : 'accent-red-surface opacity-0 group-hover:opacity-100'
+                    }`}
+                  style={!badgeStartsAccent ? accentRedSurfaceStyle : undefined}
+                />
+                <div className="relative flex h-16 w-16 items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <Icon className={`h-8 w-8 transition-colors duration-300 ${iconClassName}`} />
+                </div>
               </div>
-            </div>
-            <div>
-              <h3 className="text-3xl font-bold text-[#262626] mb-4 tracking-tight">{title}</h3>
-              <p className="text-lg text-[#262626]/70 leading-relaxed font-normal">{description}</p>
-            </div>
-          </motion.div>
-        ))}
+              <div>
+                <h3 className="text-3xl font-bold text-[#262626] mb-4 tracking-tight">{title}</h3>
+                <p className="text-lg text-[#262626]/70 leading-relaxed font-normal">{description}</p>
+              </div>
+            </motion.div>
+          )
+        }
+        )}
       </div>
 
       <FeatureWorkflowMockup />
@@ -972,17 +1002,61 @@ const Pricing = () => (
   <section id="pricing" className={sectionClassName}>
     <div className={sectionHeaderClassName}>
       <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
-        Simple pricing.<br />
-        <span className="text-[#262626]/40">No surprises.</span>
+        {/* Animation 1: "Simple pricing." slides left to right */}
+        <motion.span
+          className="block"
+          initial={{ opacity: 0, x: -60, filter: 'blur(8px)' }}
+          whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.88, ease: [0.16, 1, 0.3, 1] }}
+        >
+          Simple pricing.
+        </motion.span>
+        {/* Animation 2: "No surprises." with dramatic "No" reveal */}
+        <span className="block text-[#262626]/40">
+          <motion.span
+            className="inline-block"
+            style={{ color: 'var(--accent-red-solid)' }}
+            initial={{ opacity: 0, scale: 0.8, filter: 'blur(6px)' }}
+            whileInView={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.0, delay: 0.58, ease: [0.16, 1, 0.3, 1] }}
+          >
+            No
+          </motion.span>
+          {' '}
+          <motion.span
+            className="inline-block"
+            initial={{ opacity: 0, x: -50, filter: 'blur(8px)' }}
+            whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.88, delay: 0.14, ease: [0.16, 1, 0.3, 1] }}
+          >
+            surprises.
+          </motion.span>
+        </span>
       </h2>
       <div className={sectionHeaderCopyClassName}>
-        <p className="text-xl text-[#262626] font-normal leading-relaxed">
+        {/* Animation 3: Description slides bottom to top */}
+        <motion.p
+          className="text-xl text-[#262626] font-normal leading-relaxed"
+          initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
+          whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.82, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
+        >
           Pay once, own it forever. No subscriptions, no recurring fees.
-        </p>
+        </motion.p>
       </div>
     </div>
 
-    <div className="grid md:grid-cols-2 gap-px bg-[#cecece] rounded-[40px] overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+      className="grid md:grid-cols-2 gap-px bg-[#cecece] rounded-[40px] overflow-hidden"
+    >
       {/* Starter — Free */}
       <div className="bg-[#d8d8d8] p-10 md:p-10 lg:p-16 flex flex-col">
         {/* Plan header */}
@@ -1092,7 +1166,7 @@ const Pricing = () => (
           Get Lifetime Access
         </button>
       </div>
-    </div>
+    </motion.div>
   </section>
 );
 
@@ -1170,10 +1244,7 @@ const Contact = () => (
 );
 
 const FAQItem = ({ question, answer, isOpen, onClick }: { question: string; answer: string; isOpen: boolean; onClick: () => void }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
+  <div
     className="border-b border-[#cecece] last:border-b-0"
   >
     <button
@@ -1210,7 +1281,7 @@ const FAQItem = ({ question, answer, isOpen, onClick }: { question: string; answ
         </motion.div>
       )}
     </AnimatePresence>
-  </motion.div>
+  </div>
 );
 
 const FAQ = () => {
@@ -1247,17 +1318,45 @@ const FAQ = () => {
     <section id="faq" className={sectionClassName}>
       <div className={sectionHeaderClassName}>
         <h2 className="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight text-[#262626] md:text-6xl lg:text-[4.5rem]">
-          Got questions?<br />
-          <span className="text-[#262626]/40">We&apos;ve got answers.</span>
+          <motion.span
+            className="block"
+            initial={{ opacity: 0, x: -60, filter: 'blur(8px)' }}
+            whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.88, ease: [0.16, 1, 0.3, 1] }}
+          >
+            Got questions?
+          </motion.span>
+          <motion.span
+            className="block text-[#262626]/40"
+            initial={{ opacity: 0, x: -60, filter: 'blur(8px)' }}
+            whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.88, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+          >
+            We&apos;ve got answers.
+          </motion.span>
         </h2>
         <div className={sectionHeaderCopyClassName}>
-          <p className="text-xl text-[#262626] font-normal leading-relaxed">
+          <motion.p
+            className="text-xl text-[#262626] font-normal leading-relaxed"
+            initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
+            whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.82, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
+          >
             Everything you need to know about SimpleRecorder before getting started.
-          </p>
+          </motion.p>
         </div>
       </div>
 
-      <div className="relative z-20 bg-[#d8d8d8] rounded-[40px] p-10 md:p-10">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-20 bg-[#d8d8d8] rounded-[40px] p-10 md:p-10"
+      >
         {faqs.map((faq, idx) => (
           <FAQItem
             key={idx}
@@ -1267,34 +1366,68 @@ const FAQ = () => {
             onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
           />
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 };
 
 const Footer = () => (
-  <footer className="bg-[#262626] pt-20 pb-0 px-6 mt-6 rounded-t-[40px] max-w-[1400px] mx-auto">
-    <div className="flex flex-col items-center text-center mb-16">
-      <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-8">
-        Ready to record?
-      </h2>
-      <button className="bg-white text-[#262626] px-10 py-5 rounded-full text-lg font-bold hover:bg-[#d8d8d8] transition-colors">
-        DOWNLOAD FREE
-      </button>
-    </div>
+  <footer className="mt-6 px-6">
+    <div className="mx-auto max-w-[1400px] rounded-t-[40px] bg-[#262626] p-4 md:p-5">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,0.84fr)_minmax(0,1.66fr)]">
+        <div className="px-8 py-8 md:px-10 md:py-10">
+          <div className="flex items-center gap-3">
+            <AppLogo className="w-8 h-8" />
+            <span className="font-bold text-lg tracking-tight text-white">Simple Recorder</span>
+          </div>
 
-    <div className="flex flex-col md:flex-row justify-between items-center gap-8 pt-8 border-t border-white/10">
-      <div className="flex items-center gap-3">
-        <AppLogo className="w-8 h-8" />
-        <span className="font-bold text-lg tracking-tight text-white">Simple Recorder</span>
-      </div>
-      <div className="flex gap-8 text-sm font-normal text-white/60">
-        <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-        <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-        <a href="#" className="hover:text-white transition-colors">Twitter</a>
-      </div>
-      <div className="text-sm text-white/40 font-normal">
-        © {new Date().getFullYear()} Simple Recorder. All rights reserved.
+          <div className="mt-auto flex flex-col items-start gap-6 pt-16">
+            <h2 className="max-w-[9ch] text-left text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-[3.7rem] lg:leading-[0.98]">
+              Ready to record?
+            </h2>
+            <button className="bg-white text-[#262626] px-10 py-5 rounded-full text-lg font-bold hover:bg-[#d8d8d8] transition-colors">
+              DOWNLOAD FREE
+            </button>
+          </div>
+        </div>
+
+        <div className="flex min-h-[372px] flex-col rounded-[32px] border border-white/10 bg-white/[0.06] px-8 py-8 md:px-12 md:py-10">
+          <div className="grid w-full gap-10 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:gap-x-16 lg:gap-x-24">
+            <div className="flex flex-col items-start gap-5">
+              <span className="text-xs font-medium uppercase tracking-[0.18em] text-white/38">
+                LEGAL
+              </span>
+              <div className="flex flex-col items-start gap-4 md:gap-5">
+                <a href="#" className="text-[1.75rem] font-bold leading-none tracking-tight text-white transition-colors hover:text-white/70 md:text-[2.05rem]">
+                  Privacy Policy
+                </a>
+                <a href="#" className="text-[1.75rem] font-bold leading-none tracking-tight text-white transition-colors hover:text-white/70 md:text-[2.05rem]">
+                  Terms of Service
+                </a>
+              </div>
+            </div>
+            <div className="flex flex-col items-start gap-5">
+              <span className="text-xs font-medium uppercase tracking-[0.18em] text-white/38">
+                LINKS
+              </span>
+              <div className="flex flex-col items-start gap-4 md:gap-5">
+                {navLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="text-[1.75rem] font-bold leading-none tracking-tight text-white transition-colors hover:text-white/70 md:text-[2.05rem]"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-auto pt-14 text-left text-sm font-normal text-white/40 md:pt-16">
+            © {new Date().getFullYear()} Simple Recorder. All rights reserved.
+          </div>
+        </div>
       </div>
     </div>
   </footer>
