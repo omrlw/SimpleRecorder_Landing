@@ -1192,16 +1192,44 @@ const Contact = () => (
           {/* Left side: Title */}
           <div className="lg:w-1/2">
             <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-white leading-[1.05] mb-6">
-              Have questions?<br />
-              <span className="text-white/40">Let&apos;s talk.</span>
+              <motion.span
+                className="block"
+                initial={{ opacity: 0, x: -60, filter: 'blur(8px)' }}
+                whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.88, ease: [0.16, 1, 0.3, 1] }}
+              >
+                Have questions?
+              </motion.span>
+              <motion.span
+                className="block text-white/40"
+                initial={{ opacity: 0, x: -60, filter: 'blur(8px)' }}
+                whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.88, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+              >
+                Let&apos;s talk.
+              </motion.span>
             </h2>
-            <p className="text-xl text-white/70 font-normal leading-relaxed max-w-md">
+            <motion.p
+              className="text-xl text-white/70 font-normal leading-relaxed max-w-md"
+              initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
+              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.82, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
+            >
               Our team is here to help. Send us a message and we&apos;ll respond within 24 hours.
-            </p>
+            </motion.p>
           </div>
 
           {/* Right side: Form */}
-          <div className="lg:w-1/2 w-full bg-white/10 backdrop-blur-sm p-10 md:p-10 rounded-[32px] border border-white/10">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:w-1/2 w-full bg-white/10 backdrop-blur-sm p-10 md:p-10 rounded-[32px] border border-white/10">
+
             <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-3">
@@ -1236,7 +1264,7 @@ const Contact = () => (
                 Send Message
               </button>
             </form>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
@@ -1382,12 +1410,24 @@ const Footer = () => (
           </div>
 
           <div className="mt-auto flex flex-col items-start gap-6 pt-16">
-            <h2 className="max-w-[9ch] text-left text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-[3.7rem] lg:leading-[0.98]">
+            <motion.h2
+              className="max-w-[9ch] text-left text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-[3.7rem] lg:leading-[0.98]"
+              initial={{ opacity: 0, x: -40, filter: 'blur(6px)' }}
+              whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.88, ease: [0.16, 1, 0.3, 1] }}
+            >
               Ready to record?
-            </h2>
-            <button className="bg-white text-[#262626] px-10 py-5 rounded-full text-lg font-bold hover:bg-[#d8d8d8] transition-colors">
+            </motion.h2>
+            <motion.button
+              className="bg-white text-[#262626] px-10 py-5 rounded-full text-lg font-bold hover:bg-[#d8d8d8] transition-colors"
+              initial={{ opacity: 0, y: 20, filter: 'blur(4px)' }}
+              whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.82, delay: 0.14, ease: [0.16, 1, 0.3, 1] }}
+            >
               DOWNLOAD FREE
-            </button>
+            </motion.button>
           </div>
         </div>
 
