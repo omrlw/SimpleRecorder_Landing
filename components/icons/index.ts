@@ -12,4 +12,5 @@ export { SelectionIcon } from './SelectionIcon';
 export { SettingsIcon } from './SettingsIcon';
 export { SpeedIcon } from './SpeedIcon';
 export { SquareIcon } from './SquareIcon';
+export { WindowsLogoIcon } from './WindowsLogoIcon';
 export { WindowIcon } from './WindowIcon';

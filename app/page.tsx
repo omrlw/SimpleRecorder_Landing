@@ -17,6 +17,7 @@ import {
   SettingsIcon,
   SpeedIcon,
   SquareIcon,
+  WindowsLogoIcon,
   WindowIcon
 } from '@/components/icons';
 
@@ -58,7 +59,9 @@ const navLinks = [
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuRef = React.useRef<HTMLDivElement>(null);
+  const mobileMenuRef = React.useRef<HTMLDivElement>(null);
+  const compactMenuRef = React.useRef<HTMLDivElement>(null);
+  const desktopMenuRef = React.useRef<HTMLDivElement>(null);
   const navbarTransition = {
     duration: 0.88,
     ease: [0.22, 1, 0.36, 1] as const
@@ -86,7 +89,14 @@ const Navbar = () => {
 
   useEffect(() => {
     const handlePointerDown = (event: PointerEvent) => {
-      if (!menuRef.current?.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const menuContainers = [
+        mobileMenuRef.current,
+        compactMenuRef.current,
+        desktopMenuRef.current
+      ];
+
+      if (!menuContainers.some((container) => container?.contains(target))) {
         setIsMenuOpen(false);
       }
     };
@@ -99,7 +109,6 @@ const Navbar = () => {
   }, [isMenuOpen]);
 
   const handleMenuToggle = () => {
-    if (!isScrolled) return;
     setIsMenuOpen((open) => !open);
   };
 
@@ -109,28 +118,129 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="w-full px-6 py-6 flex items-center justify-between bg-[#F8FAFC] max-w-[1400px] mx-auto md:hidden">
-        <div className="flex items-center gap-3">
+      <nav className="mx-auto flex w-full max-w-[1400px] items-center justify-between bg-[#F8FAFC] px-4 py-4 sm:px-6 sm:py-5 md:hidden">
+        <div className="flex min-w-0 items-center gap-3">
           <NavbarLogo className="w-10 h-10" />
-          <span className="font-bold text-lg tracking-tight text-[#262626]">Simple Recorder</span>
+          <span className="truncate font-bold tracking-tight text-[#262626] text-[0.95rem] sm:text-lg">Simple Recorder</span>
+        </div>
+
+        <div ref={mobileMenuRef} className="relative">
+          <button
+            type="button"
+            onClick={handleMenuToggle}
+            aria-expanded={isMenuOpen}
+            aria-haspopup="true"
+            className="rounded-full bg-[#d8d8d8] px-4 py-2.5 text-sm font-bold text-[#262626] transition-colors hover:bg-[#cecece]"
+          >
+            Menu
+          </button>
+
+          <AnimatePresence>
+            {isMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -6, scale: 0.985 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -6, scale: 0.985 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute right-0 top-[calc(100%+12px)] z-50 w-[min(220px,calc(100vw-32px))] rounded-[28px] border border-black/5 bg-[#F8FAFC]/96 p-2 shadow-[0_24px_50px_-20px_rgba(38,38,38,0.28)] backdrop-blur-xl"
+              >
+                <div className="flex flex-col">
+                  {navLinks.map((link) => (
+                    <a
+                      key={`mobile-${link.href}`}
+                      href={link.href}
+                      onClick={handleLinkClick}
+                      className="rounded-[20px] px-4 py-3 text-sm font-bold text-[#262626] transition-colors hover:bg-[#d8d8d8]"
+                    >
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </nav>
 
-      <div className="hidden md:block h-[104px]" aria-hidden="true" />
+      <div className="hidden md:block lg:hidden h-[92px]" aria-hidden="true" />
 
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-50 hidden md:flex justify-center px-6 pt-6">
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-50 hidden md:flex lg:hidden justify-center px-6 pt-5">
+        <motion.nav
+          layout
+          transition={navbarTransition}
+          className="pointer-events-auto relative flex w-full max-w-[860px] items-center justify-between rounded-[30px] border border-black/5 bg-[#F8FAFC]/94 px-4 py-3 shadow-[0_22px_55px_-20px_rgba(38,38,38,0.2)] backdrop-blur-xl"
+        >
+          <div className="relative z-10 flex min-w-0 items-center gap-3">
+            <NavbarLogo className="w-10 h-10" />
+            <span className="truncate text-[1.05rem] font-bold tracking-tight text-[#262626]">
+              Simple Recorder
+            </span>
+          </div>
+
+          <div ref={compactMenuRef} className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center">
+            <button
+              type="button"
+              onClick={handleMenuToggle}
+              aria-expanded={isMenuOpen}
+              aria-haspopup="true"
+              className="min-w-[108px] rounded-full bg-[#d8d8d8] px-5 py-2.5 text-sm font-bold text-[#262626] transition-all duration-300 hover:bg-[#cecece]"
+            >
+              Menu
+            </button>
+
+            <AnimatePresence>
+              {isMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6, scale: 0.985 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -6, scale: 0.985 }}
+                  transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute top-[calc(100%+14px)] left-1/2 w-[220px] -translate-x-1/2 rounded-[28px] border border-black/5 bg-[#F8FAFC]/96 p-2 shadow-[0_24px_50px_-20px_rgba(38,38,38,0.28)] backdrop-blur-xl"
+                >
+                  <div className="flex flex-col">
+                    {navLinks.map((link) => (
+                      <a
+                        key={`tablet-${link.href}`}
+                        href={link.href}
+                        onClick={handleLinkClick}
+                        className="rounded-[20px] px-4 py-3 text-sm font-bold text-[#262626] transition-colors hover:bg-[#d8d8d8]"
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          <a
+            href="#pricing"
+            className="relative z-10 shrink-0 rounded-full bg-[#262626] px-5 py-2.5 text-[14px] font-bold text-white transition-colors hover:bg-black"
+          >
+            <span className="inline-flex items-center gap-2">
+              <WindowsLogoIcon className="h-4 w-4" />
+              <span>DOWNLOAD FREE</span>
+            </span>
+          </a>
+        </motion.nav>
+      </div>
+
+      <div className="hidden lg:block h-[104px]" aria-hidden="true" />
+
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-50 hidden lg:flex justify-center px-6 pt-6">
         <motion.nav
           layout
           transition={navbarTransition}
           className={`pointer-events-auto relative flex w-full items-center justify-between overflow-visible ${isScrolled
-            ? 'max-w-[760px] rounded-[34px] border border-black/5 bg-[#F8FAFC]/94 px-5 py-3 shadow-[0_22px_55px_-20px_rgba(38,38,38,0.2)] backdrop-blur-xl'
+            ? 'max-w-[720px] rounded-[34px] border border-black/5 bg-[#F8FAFC]/94 px-4 py-3 shadow-[0_22px_55px_-20px_rgba(38,38,38,0.2)] backdrop-blur-xl xl:max-w-[760px] xl:px-5'
             : 'max-w-[1400px] rounded-none border border-transparent bg-[#F8FAFC] px-0 py-0 shadow-none'
             }`}
         >
           <motion.div
             layout="position"
             transition={navbarTransition}
-            className={`relative z-10 flex shrink-0 items-center gap-3 ${isScrolled ? 'min-w-[220px]' : ''}`}
+            className={`relative z-10 flex shrink-0 items-center gap-3 ${isScrolled ? 'lg:min-w-[200px] xl:min-w-[220px]' : ''}`}
           >
             <NavbarLogo className="w-10 h-10" />
             <span className={`font-bold tracking-tight text-[#262626] ${isScrolled ? 'text-[1.05rem]' : 'text-lg'}`}>
@@ -139,11 +249,11 @@ const Navbar = () => {
           </motion.div>
 
           <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-center">
-            <div ref={menuRef} className="relative flex items-center justify-center">
+            <div ref={desktopMenuRef} className="relative flex items-center justify-center">
               <motion.div
                 layout
                 transition={centerTransition}
-                className={`origin-center flex items-center justify-center overflow-hidden ${isScrolled ? 'w-0 scale-x-[0.82] opacity-0 pointer-events-none blur-[0.4px]' : 'w-[430px] scale-x-100 opacity-100 blur-0'
+                className={`origin-center flex items-center justify-center overflow-hidden ${isScrolled ? 'w-0 scale-x-[0.82] opacity-0 pointer-events-none blur-[0.4px]' : 'w-[380px] scale-x-100 opacity-100 blur-0 xl:w-[430px]'
                   }`}
               >
                 <div className="flex items-center gap-2">
@@ -153,8 +263,8 @@ const Navbar = () => {
                       href={link.href}
                       className={
                         index === 0
-                          ? 'bg-[#d8d8d8] hover:bg-[#cecece] cursor-pointer transition-colors px-5 py-2.5 rounded-full text-sm font-bold text-[#262626]'
-                          : 'px-5 py-2.5 text-sm font-bold text-[#262626] hover:text-black transition-colors'
+                          ? 'bg-[#d8d8d8] hover:bg-[#cecece] cursor-pointer rounded-full px-4 py-2.5 text-sm font-bold text-[#262626] transition-colors xl:px-5'
+                          : 'px-4 py-2.5 text-sm font-bold text-[#262626] transition-colors hover:text-black xl:px-5'
                       }
                     >
                       {link.label}
@@ -174,7 +284,7 @@ const Navbar = () => {
                   onClick={handleMenuToggle}
                   aria-expanded={isMenuOpen}
                   aria-haspopup="true"
-                  className="min-w-[108px] rounded-full bg-[#d8d8d8] px-5 py-2.5 text-sm font-bold text-[#262626] transition-all duration-300 hover:bg-[#cecece]"
+                  className="min-w-[104px] rounded-full bg-[#d8d8d8] px-5 py-2.5 text-sm font-bold text-[#262626] transition-all duration-300 hover:bg-[#cecece] xl:min-w-[108px]"
                 >
                   Menu
                 </button>
@@ -186,7 +296,7 @@ const Navbar = () => {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -6, scale: 0.985 }}
                       transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                      className="absolute top-[calc(100%+16px)] left-1/2 w-[220px] -translate-x-1/2 rounded-[28px] border border-black/5 bg-[#F8FAFC]/96 p-2 shadow-[0_24px_50px_-20px_rgba(38,38,38,0.28)] backdrop-blur-xl"
+                      className="absolute top-[calc(100%+16px)] left-1/2 w-[210px] -translate-x-1/2 rounded-[28px] border border-black/5 bg-[#F8FAFC]/96 p-2 shadow-[0_24px_50px_-20px_rgba(38,38,38,0.28)] backdrop-blur-xl xl:w-[220px]"
                     >
                       <div className="flex flex-col">
                         {navLinks.map((link) => (
@@ -217,7 +327,10 @@ const Navbar = () => {
               className={`rounded-full bg-[#262626] font-bold text-white transition-colors hover:bg-black ${isScrolled ? 'px-5 py-2.5 text-[14px]' : 'px-6 py-3 text-[14px]'
                 }`}
             >
-              DOWNLOAD FREE
+              <span className="inline-flex items-center gap-2">
+                <WindowsLogoIcon className="h-4 w-4" />
+                <span>DOWNLOAD FREE</span>
+              </span>
             </a>
           </motion.div>
         </motion.nav>
@@ -229,6 +342,7 @@ const Navbar = () => {
 const AnimatedWidget = () => {
   const [stage, setStage] = useState<'intro-app' | 'settings-open' | 'mode-switch' | 'countdown' | 'transition-to-recording' | 'recording-idle'>('intro-app');
   const [countdown, setCountdown] = useState(3);
+  const [viewportWidth, setViewportWidth] = useState(0);
   const smoothEase: [number, number, number, number] = [0.22, 1, 0.36, 1];
   const popupSpring = {
     type: 'spring' as const,
@@ -264,14 +378,25 @@ const AnimatedWidget = () => {
   const showSelector = !isRecording;
   const compactSelector = !isIntroApp;
   const activeMode = stage === 'mode-switch' || stage === 'countdown' || stage === 'transition-to-recording' || stage === 'recording-idle' ? 1 : 0;
+  const isSmUp = viewportWidth >= 640;
+  const isMdUp = viewportWidth >= 768;
   const displayValue = 'Screen 1';
   const countdownValue = stage === 'countdown' ? `${countdown}s` : '5s';
   const highlightedRow = stage === 'countdown' ? 'Countdown' : null;
   const introControlDark = isIntroApp || isRecording;
   const centerHasGradient = isIntroApp || isTransitioningToRecording || isRecording;
   const centerShowsStop = isTransitioningToRecording || isRecording;
-  const selectorTop = 214;
-  const selectorWidth = compactSelector ? 224 : 308;
+  const widgetHeight = isMdUp ? 362 : isSmUp ? 332 : 298;
+  const popupWidth = isMdUp ? 300 : isSmUp ? 276 : 252;
+  const selectorTop = isMdUp ? 214 : isSmUp ? 196 : 182;
+  const selectorWidth = compactSelector
+    ? (isMdUp ? 224 : isSmUp ? 210 : 192)
+    : (isMdUp ? 308 : isSmUp ? 276 : 244);
+  const controlSizeClassName = isMdUp ? 'h-[52px] w-[52px]' : isSmUp ? 'h-12 w-12' : 'h-11 w-11';
+  const controlIconClassName = isMdUp ? 'h-5 w-5' : isSmUp ? 'h-[18px] w-[18px]' : 'h-4 w-4';
+  const centerControlSizeClassName = isMdUp ? 'h-[72px] w-[72px]' : isSmUp ? 'h-[68px] w-[68px]' : 'h-[60px] w-[60px]';
+  const centerIconClassName = isMdUp ? 'h-6 w-6' : isSmUp ? 'h-[22px] w-[22px]' : 'h-5 w-5';
+  const centerDotClassName = isMdUp ? 'h-8 w-8' : isSmUp ? 'h-7 w-7' : 'h-6 w-6';
   const settingsRows = [
     {
       label: 'Display',
@@ -316,6 +441,15 @@ const AnimatedWidget = () => {
   ] as const;
 
   useEffect(() => {
+    const handleResize = () => setViewportWidth(window.innerWidth);
+
+    handleResize();
+    window.addEventListener('resize', handleResize, { passive: true });
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
     const timeoutIds: number[] = [];
 
     if (stage === 'intro-app') {
@@ -353,7 +487,8 @@ const AnimatedWidget = () => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.42, ease: smoothEase }}
-      className="relative h-[344px] w-[320px] sm:h-[362px] sm:w-[360px]"
+      className="relative w-full max-w-[360px]"
+      style={{ height: widgetHeight }}
     >
       <AnimatePresence initial={false}>
         {showPopup && (
@@ -377,7 +512,8 @@ const AnimatedWidget = () => {
               ...popupSpring,
               opacity: { duration: 0.24, ease: smoothEase }
             }}
-            className="absolute left-1/2 top-0 flex w-[292px] -translate-x-1/2 flex-col gap-3.5 rounded-[38px] bg-[#d9d9d9] px-6 py-5 text-[#262626] sm:w-[300px]"
+            style={{ width: popupWidth }}
+            className="absolute left-1/2 top-0 flex -translate-x-1/2 flex-col gap-3 rounded-[34px] bg-[#d9d9d9] px-5 py-4 text-[#262626] sm:gap-3.5 sm:px-5 sm:py-[1.125rem] md:rounded-[38px] md:px-6 md:py-5"
           >
             {settingsRows.map(({ label, value, icon: Icon, toggle, toggleColor, toggleActive }, index) => {
               const isHighlighted = highlightedRow === label;
@@ -392,9 +528,9 @@ const AnimatedWidget = () => {
                     delay: isTransitioningToRecording ? 0 : 0.08 + (index * 0.055),
                     opacity: { duration: 0.22, ease: smoothEase, delay: isTransitioningToRecording ? 0 : 0.08 + (index * 0.055) }
                   }}
-                  className="flex items-center justify-between gap-4"
+                  className="flex items-center justify-between gap-3 sm:gap-4"
                 >
-                  <div className="flex w-full items-center justify-between gap-4">
+                  <div className="flex w-full items-center justify-between gap-3 sm:gap-4">
                     <motion.div
                       animate={{
                         opacity: isTransitioningToRecording ? 0 : 1,
@@ -405,9 +541,9 @@ const AnimatedWidget = () => {
                         delay: isTransitioningToRecording ? 0 : 0.1 + (index * 0.055),
                         opacity: { duration: 0.18, ease: smoothEase, delay: isTransitioningToRecording ? 0 : 0.1 + (index * 0.055) }
                       }}
-                      className="flex items-center gap-2 text-[12px] font-medium tracking-[-0.01em] text-[#111111]"
+                      className="flex items-center gap-1.5 text-[11px] font-medium tracking-[-0.01em] text-[#111111] sm:gap-2 sm:text-[11.5px] md:text-[12px]"
                     >
-                      <Icon className="h-[13px] w-[13px] shrink-0" />
+                      <Icon className="h-3 w-3 shrink-0 md:h-[13px] md:w-[13px]" />
                       <span>{label}</span>
                     </motion.div>
 
@@ -428,7 +564,7 @@ const AnimatedWidget = () => {
                         opacity: { duration: 0.18, ease: smoothEase, delay: isTransitioningToRecording ? 0 : 0.14 + (index * 0.055) },
                         boxShadow: { duration: 0.18, ease: smoothEase }
                       }}
-                      className="flex h-5 min-w-[100px] items-center justify-center gap-2 rounded-full bg-black px-3 text-[12px] font-medium text-[#d9d9d9]"
+                      className="flex h-5 min-w-[86px] items-center justify-center gap-1.5 rounded-full bg-black px-2.5 text-[11px] font-medium text-[#d9d9d9] sm:min-w-[92px] sm:gap-2 sm:px-3 sm:text-[11.5px] md:min-w-[100px] md:text-[12px]"
                     >
                       <AnimatePresence mode="wait" initial={false}>
                         <motion.span
@@ -443,7 +579,7 @@ const AnimatedWidget = () => {
                       </AnimatePresence>
 
                       {toggle ? (
-                        <motion.span className="relative h-[10px] w-[22px] overflow-hidden rounded-[5px] bg-[#262626]">
+                        <motion.span className="relative h-[9px] w-5 overflow-hidden rounded-[5px] bg-[#262626] md:h-[10px] md:w-[22px]">
                           <motion.span
                             animate={{ opacity: toggleActive ? 1 : 0 }}
                             transition={{ duration: 0.24, ease: smoothEase }}
@@ -465,7 +601,7 @@ const AnimatedWidget = () => {
                                 ? { duration: 0.18, ease: smoothEase }
                                 : { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }
                             }}
-                            className="absolute top-[1.5px] h-[7px] w-[7px] overflow-hidden rounded-full"
+                            className="absolute top-[1.5px] h-1.5 w-1.5 overflow-hidden rounded-full md:h-[7px] md:w-[7px]"
                           >
                             <motion.span
                               animate={{ opacity: toggleColor === 'accent-red' ? 1 : 0 }}
@@ -520,9 +656,9 @@ const AnimatedWidget = () => {
               opacity: { duration: 0.22, ease: smoothEase },
               boxShadow: { duration: 0.22, ease: smoothEase }
             }}
-            className="absolute left-1/2 flex h-10 -translate-x-1/2 items-center rounded-full bg-[#262626] px-2"
+            className="absolute left-1/2 flex h-9 -translate-x-1/2 items-center rounded-full bg-[#262626] px-1.5 sm:h-10 sm:px-2"
           >
-            <div className="relative flex h-6 w-full items-center gap-2">
+            <div className="relative flex h-6 w-full items-center gap-1.5 sm:gap-2">
               {selectorOptions.map(({ label, icon: Icon }, index) => {
                 const isActive = activeMode === index;
 
@@ -549,7 +685,7 @@ const AnimatedWidget = () => {
                           transition={{ duration: 0.18, ease: smoothEase }}
                           className="flex items-center justify-center"
                         >
-                          <Icon className={`h-[13px] w-[13px] ${isActive ? 'text-white' : 'text-[#d9d9d9]'}`} />
+                          <Icon className={`h-3 w-3 md:h-[13px] md:w-[13px] ${isActive ? 'text-white' : 'text-[#d9d9d9]'}`} />
                         </motion.div>
                       ) : (
                         <motion.div
@@ -558,10 +694,10 @@ const AnimatedWidget = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -4 }}
                           transition={{ duration: 0.18, ease: smoothEase }}
-                          className="flex items-center gap-1.5 text-[#111111]"
+                          className="flex items-center gap-1 text-[#111111] sm:gap-1.5"
                         >
-                          <Icon className="h-[11px] w-[11px]" />
-                          <span className="text-[12px] font-medium tracking-[-0.01em]">{label}</span>
+                          <Icon className="h-[10px] w-[10px] sm:h-[11px] sm:w-[11px]" />
+                          <span className="text-[10px] font-medium tracking-[-0.01em] sm:text-[11px] md:text-[12px]">{label}</span>
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -573,7 +709,7 @@ const AnimatedWidget = () => {
         )}
       </AnimatePresence>
 
-      <div className="absolute bottom-0 left-1/2 flex -translate-x-1/2 items-center gap-6">
+      <div className="absolute bottom-0 left-1/2 flex -translate-x-1/2 items-center gap-4 sm:gap-5 md:gap-6">
         <motion.button
           type="button"
           animate={{
@@ -586,9 +722,9 @@ const AnimatedWidget = () => {
             color: { duration: 0.26, ease: smoothEase },
             boxShadow: { duration: 0.36, ease: smoothEase }
           }}
-          className="relative flex h-[52px] w-[52px] items-center justify-center rounded-full"
+          className={`relative flex items-center justify-center rounded-full ${controlSizeClassName}`}
         >
-          <AudioIcon className="h-5 w-5" />
+          <AudioIcon className={controlIconClassName} />
           <AnimatePresence initial={false}>
             {isRecording ? (
               <motion.span
@@ -596,7 +732,7 @@ const AnimatedWidget = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.4 }}
                 transition={buttonSpring}
-                className="absolute right-[11px] top-[10px] h-1.5 w-1.5 rounded-full bg-[#46d478]"
+                className="absolute right-[10px] top-[9px] h-1.5 w-1.5 rounded-full bg-[#46d478]"
               />
             ) : null}
           </AnimatePresence>
@@ -614,9 +750,9 @@ const AnimatedWidget = () => {
             color: { duration: 0.26, ease: smoothEase },
             boxShadow: { duration: 0.36, ease: smoothEase }
           }}
-          className="relative flex h-[52px] w-[52px] items-center justify-center rounded-full"
+          className={`relative flex items-center justify-center rounded-full ${controlSizeClassName}`}
         >
-          <RecordIcon className="h-5 w-5" />
+          <RecordIcon className={controlIconClassName} />
           <AnimatePresence initial={false}>
             {isRecording ? (
               <motion.span
@@ -627,7 +763,7 @@ const AnimatedWidget = () => {
                   ...buttonSpring,
                   delay: 0.04
                 }}
-                className="absolute right-[11px] top-[10px] h-1.5 w-1.5 rounded-full bg-[#46d478]"
+                className="absolute right-[10px] top-[9px] h-1.5 w-1.5 rounded-full bg-[#46d478]"
               />
             ) : null}
           </AnimatePresence>
@@ -649,7 +785,7 @@ const AnimatedWidget = () => {
             scale: buttonSpring,
             boxShadow: { duration: 0.34, ease: smoothEase }
           }}
-          className="relative flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-full bg-black"
+          className={`relative flex items-center justify-center overflow-hidden rounded-full bg-black ${centerControlSizeClassName}`}
         >
           <motion.span
             animate={{ opacity: centerHasGradient ? 1 : 0 }}
@@ -667,7 +803,7 @@ const AnimatedWidget = () => {
                 transition={buttonSpring}
                 className="relative z-10 flex items-center justify-center"
               >
-                <SquareIcon className="h-6 w-6 fill-white text-white" />
+                <SquareIcon className={`${centerIconClassName} fill-white text-white`} />
               </motion.div>
             ) : (
               <motion.div
@@ -676,7 +812,7 @@ const AnimatedWidget = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.92 }}
                 transition={buttonSpring}
-                className="relative z-10 h-8 w-8 rounded-full bg-white"
+                className={`relative z-10 rounded-full bg-white ${centerDotClassName}`}
               />
             )}
           </AnimatePresence>
@@ -694,9 +830,9 @@ const AnimatedWidget = () => {
             color: { duration: 0.26, ease: smoothEase },
             boxShadow: { duration: 0.36, ease: smoothEase }
           }}
-          className="flex h-[52px] w-[52px] items-center justify-center rounded-full"
+          className={`flex items-center justify-center rounded-full ${controlSizeClassName}`}
         >
-          <SettingsIcon className="h-5 w-5" />
+          <SettingsIcon className={controlIconClassName} />
         </motion.button>
       </div>
     </motion.div>
@@ -709,9 +845,16 @@ const heroTitleLines = [
   'friction',
 ] as const;
 
-const sectionClassName = 'max-w-[1400px] mx-auto bg-[#F8FAFC] px-6 py-20';
-const sectionHeaderClassName = 'mb-16 flex flex-col items-start justify-between gap-10 lg:flex-row lg:items-end';
-const sectionHeaderCopyClassName = 'max-w-sm lg:pb-1';
+const sectionClassName = 'mx-auto max-w-[1400px] bg-[#F8FAFC] px-4 py-14 sm:px-6 sm:py-16 md:py-[4.5rem] lg:py-20';
+const sectionHeaderClassName = 'mb-10 flex flex-col items-start justify-between gap-6 sm:mb-12 sm:gap-8 lg:mb-16 lg:flex-row lg:items-end lg:gap-10';
+const sectionHeaderCopyClassName = 'w-full max-w-md lg:max-w-sm lg:pb-1';
+const heroTitleClassName = 'max-w-4xl text-[clamp(3rem,15vw,4.6rem)] font-bold tracking-tight text-[#262626] leading-[1.02] sm:text-[4.25rem] md:text-6xl lg:text-[5.5rem]';
+const sectionTitleClassName = 'max-w-3xl text-[clamp(3rem,15vw,4.25rem)] font-bold leading-[1.02] tracking-tight text-[#262626] sm:text-[3.6rem] md:text-6xl lg:text-[4.5rem]';
+const sectionTitleDarkClassName = 'text-[clamp(3rem,15vw,4.25rem)] font-bold tracking-tight text-white leading-[1.02] sm:text-[3.6rem] md:text-6xl lg:text-[4.5rem]';
+const sectionCopyClassName = 'text-lg font-normal leading-relaxed text-[#262626] sm:text-xl';
+const sectionCopyDarkClassName = 'max-w-md text-lg font-normal leading-relaxed text-white/70 sm:text-xl';
+const sectionCardClassName = 'rounded-[32px] bg-[#d8d8d8] p-6 sm:rounded-[40px] sm:p-8 lg:p-10';
+const priceValueClassName = 'text-[clamp(4.5rem,24vw,5.75rem)] font-bold leading-none tracking-tighter md:text-[5.75rem] xl:text-[6.5rem]';
 
 const Hero = () => {
   const videoRef = React.useRef<HTMLVideoElement>(null);
@@ -742,10 +885,10 @@ const Hero = () => {
   }, []);
 
   return (
-    <section className="max-w-[1400px] mx-auto bg-[#F8FAFC] px-6 pt-12 pb-20">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-10 mb-10 lg:mb-12">
+    <section className="mx-auto max-w-[1400px] bg-[#F8FAFC] px-4 pb-14 pt-6 sm:px-6 sm:pb-16 sm:pt-8 md:pb-[4.5rem] md:pt-10 lg:pb-20 lg:pt-12">
+      <div className="mb-8 flex flex-col items-start justify-between gap-6 sm:mb-10 sm:gap-8 lg:mb-12 lg:flex-row lg:items-end lg:gap-10">
         {/* Animation 1-3: Title lines slide from right to left */}
-        <h1 className="text-5xl md:text-6xl lg:text-[5.5rem] font-bold tracking-tight text-[#262626] max-w-4xl leading-[1.05]">
+        <h1 className={heroTitleClassName}>
           {heroTitleLines.map((line, i) => (
             <motion.span
               key={i}
@@ -763,7 +906,7 @@ const Hero = () => {
           ))}
         </h1>
 
-        <div className="flex flex-col gap-6 max-w-sm pb-2">
+        <div className="flex w-full max-w-sm flex-col gap-5 lg:pb-2">
           {/* Animation 4: Description and button slide from top */}
           <motion.p
             initial={{ opacity: 0, y: -28, filter: 'blur(6px)' }}
@@ -773,7 +916,7 @@ const Hero = () => {
               delay: heroContentDelay,
               ease: heroEase,
             }}
-            className="text-xl text-[#262626] font-normal leading-relaxed"
+            className={sectionCopyClassName}
           >
             Unlock professional screen capture with our premium solutions.
           </motion.p>
@@ -787,7 +930,7 @@ const Hero = () => {
               delay: heroContentDelay + 0.1,
               ease: heroEase,
             }}
-            className="relative bg-[#262626] text-white px-8 py-4 rounded-full w-fit text-sm font-bold tracking-wide hover:bg-black transition-colors overflow-hidden"
+            className="relative w-fit overflow-hidden rounded-full bg-[#262626] px-6 py-3.5 text-[13px] font-bold tracking-wide text-white transition-colors hover:bg-black sm:px-8 sm:py-4 sm:text-sm"
           >
             {/* Glow sweep overlay */}
             <motion.span
@@ -809,13 +952,16 @@ const Hero = () => {
               }}
               className="absolute inset-0 pointer-events-none"
             />
-            <span className="relative z-10">DOWNLOAD FREE</span>
+            <span className="relative z-10 inline-flex items-center gap-2">
+              <WindowsLogoIcon className="h-4 w-4" />
+              <span>DOWNLOAD FREE</span>
+            </span>
           </motion.button>
         </div>
       </div>
 
       {/* Visual Area */}
-      <div className="relative w-full h-[500px] md:h-[700px] rounded-[40px] overflow-hidden bg-[#e5e5e5]">
+      <div className="relative h-[360px] w-full overflow-hidden rounded-[28px] bg-[#e5e5e5] sm:h-[420px] sm:rounded-[32px] md:h-[560px] lg:h-[620px] lg:rounded-[40px] xl:h-[700px]">
         {/* Background Video / Gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#2c4a52] to-[#5a7d7f] opacity-90" />
         <video
@@ -830,7 +976,7 @@ const Hero = () => {
           <source src="/videos/background-hero1.mp4" type="video/mp4" />
         </video>
         {/* Floating Elements */}
-        <div className="absolute inset-0 flex items-center justify-center z-10">
+        <div className="absolute inset-0 z-10 flex items-center justify-center px-2 sm:px-4 md:px-0">
           <AnimatedWidget />
         </div>
       </div>
@@ -845,21 +991,21 @@ const FeatureWorkflowMockup = () => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="mt-6"
+      className="mt-6 sm:mt-8"
     >
-      <div className="pt-10">
-        <div className="mb-10">
+      <div className="pt-8 sm:pt-10">
+        <div className="mb-8 sm:mb-10">
           <div className="max-w-4xl">
-            <h3 className="text-4xl font-bold leading-[1.02] tracking-tight text-[#262626] md:text-5xl">
+            <h3 className="text-[clamp(2.25rem,11vw,3.25rem)] font-bold leading-[1.02] tracking-tight text-[#262626] sm:text-4xl md:text-5xl">
               Leave one strong screen here and swap in your video later.
             </h3>
           </div>
         </div>
 
-        <div className="rounded-[36px] bg-[#262626] p-3 shadow-[0_34px_80px_-34px_rgba(38,38,38,0.45)]">
-          <div className="overflow-hidden rounded-[30px] bg-[#f2f2f2]">
-            <div className="bg-[linear-gradient(135deg,#314e56_0%,#527278_48%,#9ab1b4_100%)] p-3 md:p-4">
-              <div className="relative aspect-[16/9] overflow-hidden rounded-[28px] border border-white/20 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_30%),linear-gradient(145deg,rgba(12,18,20,0.18),rgba(12,18,20,0.48))]">
+        <div className="rounded-[28px] bg-[#262626] p-2.5 shadow-[0_34px_80px_-34px_rgba(38,38,38,0.45)] sm:rounded-[36px] sm:p-3">
+          <div className="overflow-hidden rounded-[24px] bg-[#f2f2f2] sm:rounded-[30px]">
+            <div className="bg-[linear-gradient(135deg,#314e56_0%,#527278_48%,#9ab1b4_100%)] p-2.5 sm:p-3 md:p-4">
+              <div className="relative aspect-[16/9] overflow-hidden rounded-[22px] border border-white/20 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_30%),linear-gradient(145deg,rgba(12,18,20,0.18),rgba(12,18,20,0.48))] sm:rounded-[28px]">
                 <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.12),transparent_34%,rgba(255,255,255,0.05)_100%)]" />
               </div>
             </div>
@@ -874,8 +1020,8 @@ const Features = () => {
   const features = [
     {
       icon: EyesIcon,
-      iconClassName: 'text-white group-hover:text-[#262626]',
-      badgeStartsAccent: true,
+      iconClassName: 'text-[#262626] group-hover:text-white',
+      badgeStartsAccent: false,
       title: "120 FPS",
       description: "Silky s   mooth recordings perfect for gaming, high-end UI demonstrations, and professional tutorials. Zero dropped frames."
     },
@@ -919,7 +1065,7 @@ const Features = () => {
   return (
     <section id="features" className={sectionClassName}>
       <div className={sectionHeaderClassName}>
-        <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
+        <h2 className={sectionTitleClassName}>
           {/* Animation 1: "Everything you need." slides left to right */}
           <motion.span
             className="block"
@@ -944,7 +1090,7 @@ const Features = () => {
         <div className={sectionHeaderCopyClassName}>
           {/* Animation 3: Description slides bottom to top */}
           <motion.p
-            className="text-xl text-[#262626] font-normal leading-relaxed"
+            className={sectionCopyClassName}
             initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
             whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={{ once: true }}
@@ -955,7 +1101,7 @@ const Features = () => {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
         {features.map(({ icon: Icon, iconClassName, badgeStartsAccent, title, description }, idx) => {
           const row = Math.floor(idx / 2);
           const col = idx % 2;
@@ -966,9 +1112,9 @@ const Features = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: row * 0.12 + col * 0.06, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-[#d8d8d8] p-10 md:p-10 rounded-[40px] flex flex-col justify-between h-full min-h-[320px] group hover:bg-[#cecece] transition-colors"
+              className={`${sectionCardClassName} group flex h-full min-h-[280px] flex-col justify-between transition-colors hover:bg-[#cecece] sm:min-h-[320px]`}
             >
-              <div className="relative mb-12 h-16 w-16">
+              <div className="relative mb-10 h-14 w-14 sm:mb-12 sm:h-16 sm:w-16">
                 <span
                   className={`absolute inset-0 rounded-full shadow-sm transition-all duration-300 ${badgeStartsAccent ? 'accent-red-surface opacity-100 group-hover:opacity-0' : 'bg-white opacity-100 group-hover:opacity-0'
                     }`}
@@ -979,13 +1125,13 @@ const Features = () => {
                     }`}
                   style={!badgeStartsAccent ? accentRedSurfaceStyle : undefined}
                 />
-                <div className="relative flex h-16 w-16 items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Icon className={`h-8 w-8 transition-colors duration-300 ${iconClassName}`} />
+                <div className="relative flex h-14 w-14 items-center justify-center transition-transform duration-300 group-hover:scale-110 sm:h-16 sm:w-16">
+                  <Icon className={`h-7 w-7 transition-colors duration-300 sm:h-8 sm:w-8 ${iconClassName}`} />
                 </div>
               </div>
               <div>
-                <h3 className="text-3xl font-bold text-[#262626] mb-4 tracking-tight">{title}</h3>
-                <p className="text-lg text-[#262626]/70 leading-relaxed font-normal">{description}</p>
+                <h3 className="mb-4 text-2xl font-bold tracking-tight text-[#262626] sm:text-3xl">{title}</h3>
+                <p className="text-base font-normal leading-relaxed text-[#262626]/70 sm:text-lg">{description}</p>
               </div>
             </motion.div>
           )
@@ -1001,7 +1147,7 @@ const Features = () => {
 const Pricing = () => (
   <section id="pricing" className={sectionClassName}>
     <div className={sectionHeaderClassName}>
-      <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-[#262626] max-w-3xl leading-[1.05]">
+      <h2 className={sectionTitleClassName}>
         {/* Animation 1: "Simple pricing." slides left to right */}
         <motion.span
           className="block"
@@ -1039,7 +1185,7 @@ const Pricing = () => (
       <div className={sectionHeaderCopyClassName}>
         {/* Animation 3: Description slides bottom to top */}
         <motion.p
-          className="text-xl text-[#262626] font-normal leading-relaxed"
+          className={sectionCopyClassName}
           initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
           whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
           viewport={{ once: true }}
@@ -1055,13 +1201,13 @@ const Pricing = () => (
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-      className="grid md:grid-cols-2 gap-px bg-[#cecece] rounded-[40px] overflow-hidden"
+      className="grid gap-px overflow-hidden rounded-[32px] bg-[#cecece] sm:rounded-[40px] lg:grid-cols-2"
     >
       {/* Starter — Free */}
-      <div className="bg-[#d8d8d8] p-10 md:p-10 lg:p-16 flex flex-col">
+      <div className="flex flex-col bg-[#d8d8d8] p-6 sm:p-8 md:p-8 xl:p-16">
         {/* Plan header */}
-        <div className="mb-14">
-          <div className="flex items-center gap-3 mb-5">
+        <div className="mb-10 sm:mb-12 xl:mb-14">
+          <div className="mb-4 flex flex-col items-start gap-2 sm:mb-5 sm:flex-row sm:items-center sm:gap-3">
             <p className="text-xs font-bold tracking-[0.15em] uppercase text-[#262626]/40">
               Starter
             </p>
@@ -1069,22 +1215,22 @@ const Pricing = () => (
               Free forever
             </span>
           </div>
-          <div className="flex items-baseline gap-2 mb-5">
-            <span className="text-[5.5rem] md:text-[6.5rem] font-bold tracking-tighter text-[#262626] leading-none">
+          <div className="mb-4 flex items-baseline gap-2 sm:mb-5">
+            <span className={`${priceValueClassName} text-[#262626]`}>
               $0
             </span>
           </div>
-          <p className="text-lg text-[#262626]/60 font-normal leading-relaxed">
+          <p className="text-base font-normal leading-relaxed text-[#262626]/60 sm:text-lg">
             Everything you need for clean, fast screen recording — completely free, forever.
           </p>
         </div>
 
         {/* Features */}
-        <div className="mb-14 flex-grow">
+        <div className="mb-10 flex-grow sm:mb-12 xl:mb-14">
           <p className="text-xs font-bold tracking-[0.15em] uppercase text-[#262626]/40 mb-6">
             What&apos;s included
           </p>
-          <ul className="flex flex-col gap-5">
+          <ul className="flex flex-col gap-4 sm:gap-5">
             {[
               'Up to 120 FPS recording',
               'Up to 1080p resolution',
@@ -1095,7 +1241,7 @@ const Pricing = () => (
               'Lightweight & fast',
               'Community support'
             ].map((item, i) => (
-              <li key={i} className="flex items-center gap-4 text-lg text-[#262626]/80 font-normal">
+              <li key={i} className="flex items-start gap-4 text-base font-normal text-[#262626]/80 sm:text-lg">
                 <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
                   <CheckIcon className="w-4 h-4 text-[#262626]" />
                 </div>
@@ -1106,16 +1252,19 @@ const Pricing = () => (
         </div>
 
         {/* CTA */}
-        <button className="w-full py-5 rounded-full font-bold text-[#262626] bg-white hover:bg-[#F8FAFC] transition-colors text-lg cursor-pointer shadow-sm">
-          Download Free
+        <button className="w-full cursor-pointer rounded-full bg-white py-4 text-base font-bold text-[#262626] shadow-sm transition-colors hover:bg-[#F8FAFC] sm:py-5 sm:text-lg">
+          <span className="inline-flex items-center gap-2">
+            <WindowsLogoIcon className="h-5 w-5" />
+            <span>Download Free</span>
+          </span>
         </button>
       </div>
 
       {/* Pro — One-time */}
-      <div className="bg-[#262626] p-10 md:p-10 lg:p-16 flex flex-col relative">
+      <div className="relative flex flex-col bg-[#262626] p-6 sm:p-8 md:p-8 xl:p-16">
         {/* Plan header */}
-        <div className="mb-14">
-          <div className="flex items-center gap-3 mb-5">
+        <div className="mb-10 sm:mb-12 xl:mb-14">
+          <div className="mb-4 flex flex-col items-start gap-2 sm:mb-5 sm:flex-row sm:items-center sm:gap-3">
             <p className="text-xs font-bold tracking-[0.15em] uppercase text-white/40">
               Pro
             </p>
@@ -1123,22 +1272,22 @@ const Pricing = () => (
               One-time purchase
             </span>
           </div>
-          <div className="flex items-baseline gap-2 mb-5">
-            <span className="text-[5.5rem] md:text-[6.5rem] font-bold tracking-tighter text-white leading-none">
+          <div className="mb-4 flex items-baseline gap-2 sm:mb-5">
+            <span className={`${priceValueClassName} text-white`}>
               $5
             </span>
           </div>
-          <p className="text-lg text-white/60 font-normal leading-relaxed">
+          <p className="text-base font-normal leading-relaxed text-white/60 sm:text-lg">
             Unlock the full power of Simple Recorder with a single payment. Yours forever.
           </p>
         </div>
 
         {/* Features */}
-        <div className="mb-14 flex-grow">
+        <div className="mb-10 flex-grow sm:mb-12 xl:mb-14">
           <p className="text-xs font-bold tracking-[0.15em] uppercase text-white/35 mb-6">
             Everything in Starter, plus
           </p>
-          <ul className="flex flex-col gap-5">
+          <ul className="flex flex-col gap-4 sm:gap-5">
             {[
               'Record at your monitor\'s refresh rate',
               'Up to 4K resolution',
@@ -1148,7 +1297,7 @@ const Pricing = () => (
               'Priority support',
               'Future updates included'
             ].map((item, i) => (
-              <li key={i} className="flex items-center gap-4 text-lg text-white/80 font-normal">
+              <li key={i} className="flex items-start gap-4 text-base font-normal text-white/80 sm:text-lg">
                 <div className="accent-red-surface w-6 h-6 rounded-full flex items-center justify-center shrink-0" style={accentRedSurfaceStyle}>
                   <CheckIcon className="w-4 h-4 text-white" />
                 </div>
@@ -1160,7 +1309,7 @@ const Pricing = () => (
 
         {/* CTA */}
         <button
-          className="accent-red-surface w-full py-5 rounded-full font-bold text-white hover:brightness-110 transition-[filter] text-lg cursor-pointer"
+          className="accent-red-surface w-full cursor-pointer rounded-full py-4 text-base font-bold text-white transition-[filter] hover:brightness-110 sm:py-5 sm:text-lg"
           style={accentRedSurfaceStyle}
         >
           Get Lifetime Access
@@ -1172,7 +1321,7 @@ const Pricing = () => (
 
 const Contact = () => (
   <section id="contact" className={sectionClassName}>
-    <div className="relative rounded-[40px] overflow-hidden">
+    <div className="relative overflow-hidden rounded-[32px] sm:rounded-[40px]">
       {/* Background video */}
       <video
         autoPlay
@@ -1187,11 +1336,11 @@ const Contact = () => (
       <div className="absolute inset-0 bg-black/80" />
 
       {/* Content */}
-      <div className="relative z-10 p-10 md:p-10">
-        <div className="flex flex-col lg:flex-row gap-16 items-start">
+      <div className="relative z-10 p-5 sm:p-6 md:p-8 lg:p-10">
+        <div className="flex flex-col items-start gap-8 sm:gap-10 md:gap-12 lg:flex-row lg:gap-16">
           {/* Left side: Title */}
-          <div className="lg:w-1/2">
-            <h2 className="text-5xl md:text-6xl lg:text-[4.5rem] font-bold tracking-tight text-white leading-[1.05] mb-6">
+          <div className="w-full lg:w-1/2">
+            <h2 className={`${sectionTitleDarkClassName} mb-5 max-w-[10ch] sm:mb-6`}>
               <motion.span
                 className="block"
                 initial={{ opacity: 0, x: -60, filter: 'blur(8px)' }}
@@ -1212,7 +1361,7 @@ const Contact = () => (
               </motion.span>
             </h2>
             <motion.p
-              className="text-xl text-white/70 font-normal leading-relaxed max-w-md"
+              className={sectionCopyDarkClassName}
               initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
               whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               viewport={{ once: true }}
@@ -1228,37 +1377,37 @@ const Contact = () => (
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:w-1/2 w-full bg-white/10 backdrop-blur-sm p-10 md:p-10 rounded-[32px] border border-white/10">
+            className="w-full rounded-[28px] border border-white/10 bg-white/10 p-5 backdrop-blur-sm sm:rounded-[32px] sm:p-6 md:p-8 lg:w-1/2 lg:p-10">
 
-            <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="flex flex-col gap-3">
+            <form className="flex flex-col gap-5 sm:gap-6" onSubmit={(e) => e.preventDefault()}>
+              <div className="grid gap-5 md:grid-cols-2 md:gap-6">
+                <div className="flex min-w-0 flex-col gap-3">
                   <label className="text-sm font-bold text-white uppercase tracking-wider">Name</label>
                   <input
                     type="text"
                     placeholder="Jane Doe"
-                    className="accent-red-focus-ring px-6 py-4 rounded-2xl border-none focus:outline-none transition-all bg-white/10 text-lg font-normal text-white placeholder:text-white/30"
+                    className="accent-red-focus-ring w-full min-w-0 rounded-2xl border-none bg-white/10 px-5 py-3.5 text-base font-normal text-white placeholder:text-white/30 transition-all focus:outline-none sm:px-6 sm:py-4 sm:text-lg"
                   />
                 </div>
-                <div className="flex flex-col gap-3">
+                <div className="flex min-w-0 flex-col gap-3">
                   <label className="text-sm font-bold text-white uppercase tracking-wider">Email</label>
                   <input
                     type="email"
                     placeholder="jane@example.com"
-                    className="accent-red-focus-ring px-6 py-4 rounded-2xl border-none focus:outline-none transition-all bg-white/10 text-lg font-normal text-white placeholder:text-white/30"
+                    className="accent-red-focus-ring w-full min-w-0 rounded-2xl border-none bg-white/10 px-5 py-3.5 text-base font-normal text-white placeholder:text-white/30 transition-all focus:outline-none sm:px-6 sm:py-4 sm:text-lg"
                   />
                 </div>
               </div>
-              <div className="flex flex-col gap-3">
+              <div className="flex min-w-0 flex-col gap-3">
                 <label className="text-sm font-bold text-white uppercase tracking-wider">Message</label>
                 <textarea
                   rows={4}
                   placeholder="How can we help you?"
-                  className="accent-red-focus-ring px-6 py-4 rounded-2xl border-none focus:outline-none transition-all bg-white/10 text-lg font-normal text-white placeholder:text-white/30 resize-none"
+                  className="accent-red-focus-ring w-full min-w-0 resize-none rounded-2xl border-none bg-white/10 px-5 py-3.5 text-base font-normal text-white placeholder:text-white/30 transition-all focus:outline-none sm:px-6 sm:py-4 sm:text-lg"
                 />
               </div>
               <button
-                className="accent-red-surface w-full text-white py-5 rounded-full font-bold hover:brightness-110 transition-[filter] text-lg mt-4"
+                className="accent-red-surface mt-2 w-full rounded-full py-4 text-base font-bold text-white transition-[filter] hover:brightness-110 sm:mt-4 sm:py-5 sm:text-lg"
                 style={accentRedSurfaceStyle}
               >
                 Send Message
@@ -1277,20 +1426,20 @@ const FAQItem = ({ question, answer, isOpen, onClick }: { question: string; answ
   >
     <button
       onClick={onClick}
-      className="w-full flex items-center justify-between py-8 text-left group cursor-pointer"
+      className="group flex w-full items-center justify-between gap-4 py-6 text-left sm:py-8"
     >
-      <span className="text-xl md:text-2xl font-bold text-[#262626] pr-8 group-hover:text-[#da3036] transition-colors">
+      <span className="pr-4 text-lg font-bold text-[#262626] transition-colors group-hover:text-[#da3036] sm:pr-8 sm:text-xl md:text-2xl">
         {question}
       </span>
       <div
-        className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${isOpen ? 'accent-red-surface rotate-0' : 'bg-[#d8d8d8] group-hover:bg-[#cecece]'
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-300 sm:h-12 sm:w-12 ${isOpen ? 'accent-red-surface rotate-0' : 'bg-[#d8d8d8] group-hover:bg-[#cecece]'
           }`}
         style={isOpen ? accentRedSurfaceStyle : undefined}
       >
         {isOpen ? (
-          <MinusIcon className="w-5 h-5 text-white" />
+          <MinusIcon className="h-4 w-4 text-white sm:h-5 sm:w-5" />
         ) : (
-          <PlusIcon className="w-5 h-5 text-[#262626]" />
+          <PlusIcon className="h-4 w-4 text-[#262626] sm:h-5 sm:w-5" />
         )}
       </div>
     </button>
@@ -1303,7 +1452,7 @@ const FAQItem = ({ question, answer, isOpen, onClick }: { question: string; answ
           transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
           className="overflow-hidden"
         >
-          <p className="text-lg text-[#262626]/60 font-normal leading-relaxed pb-8 max-w-3xl">
+          <p className="max-w-3xl pb-6 text-base font-normal leading-relaxed text-[#262626]/60 sm:pb-8 sm:text-lg">
             {answer}
           </p>
         </motion.div>
@@ -1345,7 +1494,7 @@ const FAQ = () => {
   return (
     <section id="faq" className={sectionClassName}>
       <div className={sectionHeaderClassName}>
-        <h2 className="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight text-[#262626] md:text-6xl lg:text-[4.5rem]">
+        <h2 className={sectionTitleClassName}>
           <motion.span
             className="block"
             initial={{ opacity: 0, x: -60, filter: 'blur(8px)' }}
@@ -1367,7 +1516,7 @@ const FAQ = () => {
         </h2>
         <div className={sectionHeaderCopyClassName}>
           <motion.p
-            className="text-xl text-[#262626] font-normal leading-relaxed"
+            className={sectionCopyClassName}
             initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
             whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={{ once: true }}
@@ -1383,7 +1532,7 @@ const FAQ = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.15 }}
         transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-20 bg-[#d8d8d8] rounded-[40px] p-10 md:p-10"
+        className="relative z-20 rounded-[32px] bg-[#d8d8d8] p-6 sm:rounded-[40px] sm:p-8 md:p-10"
       >
         {faqs.map((faq, idx) => (
           <FAQItem
@@ -1400,18 +1549,18 @@ const FAQ = () => {
 };
 
 const Footer = () => (
-  <footer className="mt-6 px-6">
-    <div className="mx-auto max-w-[1400px] rounded-t-[40px] bg-[#262626] p-4 md:p-5">
+  <footer className="mt-4 px-4 sm:mt-6 sm:px-6">
+    <div className="mx-auto max-w-[1400px] rounded-t-[32px] bg-[#262626] p-3 sm:rounded-t-[40px] sm:p-4 md:p-5">
       <div className="grid gap-4 lg:grid-cols-[minmax(0,0.84fr)_minmax(0,1.66fr)]">
-        <div className="px-8 py-8 md:px-10 md:py-10">
+        <div className="px-6 py-6 sm:px-8 sm:py-8 md:px-10 md:py-10">
           <div className="flex items-center gap-3">
             <AppLogo className="w-8 h-8" />
             <span className="font-bold text-lg tracking-tight text-white">Simple Recorder</span>
           </div>
 
-          <div className="mt-auto flex flex-col items-start gap-6 pt-16">
+          <div className="mt-auto flex flex-col items-start gap-5 pt-10 sm:gap-6 sm:pt-12 md:pt-16">
             <motion.h2
-              className="max-w-[9ch] text-left text-4xl font-bold tracking-tight text-white md:text-5xl lg:text-[3.7rem] lg:leading-[0.98]"
+              className="max-w-[9ch] text-left text-[clamp(2.5rem,12vw,3.5rem)] font-bold tracking-tight text-white md:text-5xl lg:text-[3.7rem] lg:leading-[0.98]"
               initial={{ opacity: 0, x: -40, filter: 'blur(6px)' }}
               whileInView={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
               viewport={{ once: true }}
@@ -1420,28 +1569,31 @@ const Footer = () => (
               Ready to record?
             </motion.h2>
             <motion.button
-              className="bg-white text-[#262626] px-10 py-5 rounded-full text-lg font-bold hover:bg-[#d8d8d8] transition-colors"
+              className="rounded-full bg-white px-8 py-4 text-base font-bold text-[#262626] transition-colors hover:bg-[#d8d8d8] sm:px-10 sm:py-5 sm:text-lg"
               initial={{ opacity: 0, y: 20, filter: 'blur(4px)' }}
               whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
               viewport={{ once: true }}
               transition={{ duration: 0.82, delay: 0.14, ease: [0.16, 1, 0.3, 1] }}
             >
-              DOWNLOAD FREE
+              <span className="inline-flex items-center gap-2">
+                <WindowsLogoIcon className="h-5 w-5" />
+                <span>DOWNLOAD FREE</span>
+              </span>
             </motion.button>
           </div>
         </div>
 
-        <div className="flex min-h-[372px] flex-col rounded-[32px] border border-white/10 bg-white/[0.06] px-8 py-8 md:px-12 md:py-10">
-          <div className="grid w-full gap-10 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:gap-x-16 lg:gap-x-24">
+        <div className="flex min-h-[320px] flex-col rounded-[28px] border border-white/10 bg-white/[0.06] px-6 py-6 sm:min-h-[372px] sm:rounded-[32px] sm:px-8 sm:py-8 md:px-10 md:py-10">
+          <div className="grid w-full gap-8 sm:gap-10 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:gap-x-16 lg:gap-x-24">
             <div className="flex flex-col items-start gap-5">
               <span className="text-xs font-medium uppercase tracking-[0.18em] text-white/38">
                 LEGAL
               </span>
-              <div className="flex flex-col items-start gap-4 md:gap-5">
-                <a href="#" className="text-[1.75rem] font-bold leading-none tracking-tight text-white transition-colors hover:text-white/70 md:text-[2.05rem]">
+              <div className="flex flex-col items-start gap-3 sm:gap-4 md:gap-5">
+                <a href="#" className="text-[1.45rem] font-bold leading-none tracking-tight text-white transition-colors hover:text-white/70 sm:text-[1.65rem] md:text-[2.05rem]">
                   Privacy Policy
                 </a>
-                <a href="#" className="text-[1.75rem] font-bold leading-none tracking-tight text-white transition-colors hover:text-white/70 md:text-[2.05rem]">
+                <a href="#" className="text-[1.45rem] font-bold leading-none tracking-tight text-white transition-colors hover:text-white/70 sm:text-[1.65rem] md:text-[2.05rem]">
                   Terms of Service
                 </a>
               </div>
@@ -1450,12 +1602,12 @@ const Footer = () => (
               <span className="text-xs font-medium uppercase tracking-[0.18em] text-white/38">
                 LINKS
               </span>
-              <div className="flex flex-col items-start gap-4 md:gap-5">
+              <div className="flex flex-col items-start gap-3 sm:gap-4 md:gap-5">
                 {navLinks.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
-                    className="text-[1.75rem] font-bold leading-none tracking-tight text-white transition-colors hover:text-white/70 md:text-[2.05rem]"
+                    className="text-[1.45rem] font-bold leading-none tracking-tight text-white transition-colors hover:text-white/70 sm:text-[1.65rem] md:text-[2.05rem]"
                   >
                     {link.label}
                   </a>
@@ -1464,7 +1616,7 @@ const Footer = () => (
             </div>
           </div>
 
-          <div className="mt-auto pt-14 text-left text-sm font-normal text-white/40 md:pt-16">
+          <div className="mt-auto pt-10 text-left text-sm font-normal text-white/40 sm:pt-14 md:pt-16">
             © {new Date().getFullYear()} Simple Recorder. All rights reserved.
           </div>
         </div>
